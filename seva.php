@@ -60,10 +60,10 @@ $sevaOptions = [
         </div>
       </div>
       <div class="col-lg-6">
-        <img src="<?= BASE_URL ?>/assets/images/seva.jpg"
+        <img src="<?= BASE_URL ?>/uploads/cows/sahiwal_lakshmi.jpg"
              onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'"
-             alt="Gau Seva at Kamadhenu Goushala"
-             class="kg-about-img" loading="lazy">
+             alt="Beautiful Sahiwal Cow at Kamadhenu Goushala"
+             class="kg-about-img" loading="lazy" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
       </div>
     </div>
   </div>

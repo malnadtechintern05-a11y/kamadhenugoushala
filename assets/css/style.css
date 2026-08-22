@@ -6,27 +6,27 @@
 
 /* ── Root Variables ─────────────────────────────────────────── */
 :root {
-  --kg-green:       #2d6a4f;
-  --kg-green-dark:  #1b4332;
-  --kg-green-light: #40916c;
-  --kg-green-pale:  #d8f3dc;
-  --kg-gold:        #e9a84c;
-  --kg-gold-dark:   #c47c16;
-  --kg-gold-light:  #fce4a4;
-  --kg-cream:       #fdf6e3;
-  --kg-cream-dark:  #f5e6c8;
-  --kg-brown:       #6b4226;
-  --kg-text:        #1a1a2e;
-  --kg-text-muted:  #5a5a72;
-  --kg-border:      #e0d5c0;
-  --kg-white:       #ffffff;
-  --kg-shadow-sm:   0 2px 8px rgba(45,106,79,.10);
-  --kg-shadow-md:   0 6px 24px rgba(45,106,79,.15);
-  --kg-shadow-lg:   0 12px 40px rgba(45,106,79,.20);
-  --kg-radius:      16px;
-  --kg-radius-sm:   8px;
+  --kg-green:       #4A6741; /* Deep Earthy Green */
+  --kg-green-dark:  #364E2D;
+  --kg-green-light: #7A966E;
+  --kg-green-pale:  #E2E8DC;
+  --kg-gold:        #B97A3F; /* Earthy Brown/Gold */
+  --kg-gold-dark:   #8F5927;
+  --kg-gold-light:  #DFBC94;
+  --kg-cream:       #F4F1EA; /* Primary Background */
+  --kg-cream-dark:  #EAE4D4; /* Secondary Background */
+  --kg-brown:       #584033; /* Deep Brown */
+  --kg-text:        #2D241E; /* Deep Charcoal/Brown Text */
+  --kg-text-muted:  #786C60; /* Muted Warm Gray/Brown Text */
+  --kg-border:      #E6E0D4; /* Subtle Beige/Taupe Border */
+  --kg-white:       #FAF9F6; /* Card Backgrounds - Warm Off-White */
+  --kg-shadow-sm:   0 4px 12px rgba(45, 36, 30, .04);
+  --kg-shadow-md:   0 8px 24px rgba(45, 36, 30, .08);
+  --kg-shadow-lg:   0 16px 48px rgba(45, 36, 30, .12);
+  --kg-radius:      20px;
+  --kg-radius-sm:   12px;
   --kg-radius-pill: 50px;
-  --kg-transition:  all .3s cubic-bezier(.4,0,.2,1);
+  --kg-transition:  all .4s cubic-bezier(.25,.8,.25,1);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
@@ -36,9 +36,9 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: var(--kg-cream);
   color: var(--kg-text);
-  line-height: 1.7;
+  background-color: var(--kg-cream);
+  line-height: 1.6;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -64,7 +64,7 @@ img { max-width: 100%; height: auto; }
    NAVBAR
    ================================================================ */
 .kg-navbar {
-  background: rgba(253,246,227,.97);
+  background: rgba(244, 241, 234, .92);
   backdrop-filter: blur(12px);
   border-bottom: 2px solid var(--kg-cream-dark);
   padding: .75rem 0;
@@ -391,7 +391,7 @@ img { max-width: 100%; height: auto; }
   border: 1px solid var(--kg-border);
 }
 .kg-cow-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(1.01);
   box-shadow: var(--kg-shadow-md);
 }
 .kg-cow-card-img {
@@ -418,8 +418,8 @@ img { max-width: 100%; height: auto; }
   letter-spacing: .04em;
 }
 .kg-cow-card-badge.available   { background: var(--kg-green-pale); color: var(--kg-green-dark); }
-.kg-cow-card-badge.adopted     { background: #fff3cd; color: #856404; }
-.kg-cow-card-badge.unavailable { background: #f8d7da; color: #842029; }
+.kg-cow-card-badge.adopted     { background: #E6E0D4; color: #8F5927; }
+.kg-cow-card-badge.unavailable { background: #EAD4D4; color: #8C3939; }
 
 .kg-cow-card-body { padding: 1.4rem; }
 .kg-cow-card-name {
@@ -456,7 +456,7 @@ img { max-width: 100%; height: auto; }
   border: 1px solid var(--kg-border);
 }
 .kg-product-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(1.01);
   box-shadow: var(--kg-shadow-md);
 }
 .kg-product-card-img {
@@ -511,7 +511,7 @@ img { max-width: 100%; height: auto; }
   height: 100%;
 }
 .kg-seva-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(1.01);
   box-shadow: var(--kg-shadow-md);
   border-color: var(--kg-green-pale);
 }
@@ -570,6 +570,29 @@ img { max-width: 100%; height: auto; }
 .kg-gallery-title { color: #fff; font-size: .88rem; font-weight: 600; }
 
 /* ================================================================
+   VIDEO WRAPPER
+   ================================================================ */
+.kg-video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: var(--kg-radius);
+  box-shadow: var(--kg-shadow-lg);
+  border: 1px solid var(--kg-border);
+  background: var(--kg-green-dark);
+}
+.kg-video-wrapper iframe,
+.kg-video-wrapper video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ================================================================
    PAGE BANNER
    ================================================================ */
 .kg-page-banner {
@@ -615,13 +638,13 @@ img { max-width: 100%; height: auto; }
   padding: .65rem 1rem;
   font-size: .9rem;
   color: var(--kg-text);
-  background-color: #fafaf8;
+  background-color: var(--kg-white);
   transition: var(--kg-transition);
 }
 .form-control:focus, .form-select:focus {
   border-color: var(--kg-green);
-  box-shadow: 0 0 0 3px rgba(45,106,79,.12);
-  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(74, 103, 65, .15);
+  background-color: #ffffff;
   outline: none;
 }
 .form-control::placeholder { color: #aaa; }
@@ -744,7 +767,7 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 /* ================================================================
    ADMIN LAYOUT
    ================================================================ */
-.kg-admin-body { background: #f0f2f5; font-family: 'Poppins', sans-serif; }
+.kg-admin-body { background: var(--kg-cream); font-family: 'Poppins', sans-serif; color: var(--kg-text); }
 
 /* Sidebar */
 .kg-sidebar {
@@ -1056,3 +1079,35 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 .kg-timeline-year { font-weight: 700; color: var(--kg-gold-dark); font-size: .85rem; }
 .kg-timeline-title { font-family: 'Noto Serif', serif; color: var(--kg-green-dark); margin: .2rem 0; }
 .kg-timeline-desc { color: var(--kg-text-muted); font-size: .88rem; }
+
+/* ================================================================
+   SMOOTH ANIMATIONS (Global)
+   ================================================================ */
+
+/* Dropdown Menus Smooth Animation */
+.dropdown-menu {
+  animation: dropdownFade 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: top center;
+  display: none;
+}
+.dropdown-menu.show {
+  display: block;
+}
+@keyframes dropdownFade {
+  0% { opacity: 0; transform: translateY(-10px) scaleY(0.95); }
+  100% { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+
+/* Navbar Collapse Smooth Animation (Mobile Menu) */
+.navbar-collapse {
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Page Load Smooth Fade In */
+body {
+  animation: pageLoadFade 0.8s ease-out forwards;
+}
+@keyframes pageLoadFade {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}

@@ -16,11 +16,11 @@ $pageDesc  = $pageDesc  ?? 'Kamadhenu Goushala — A sacred sanctuary dedicated 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<?= e($pageDesc) ?>">
-  <meta name="theme-color" content="#2d6a4f">
+  <meta name="theme-color" content="#F4F1EA">
   <title><?= e($pageTitle) ?> | <?= e(SITE_NAME) ?></title>
 
   <!-- Favicon -->
-  <link rel="icon" href="<?= BASE_URL ?>/assets/images/favicon.png" type="image/png">
+  <link rel="icon" href="<?= BASE_URL ?>/assets/images/favicon.svg?v=3" type="image/svg+xml">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,6 +32,6 @@ $pageDesc  = $pageDesc  ?? 'Kamadhenu Goushala — A sacred sanctuary dedicated 
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css?v=<?= time() ?>">
 </head>
 <body>

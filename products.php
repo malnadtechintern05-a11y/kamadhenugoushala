@@ -92,7 +92,9 @@ require_once __DIR__ . '/includes/navbar.php';
             </div>
             <div class="d-flex gap-2">
               <a href="<?= BASE_URL ?>/product-details.php?id=<?= (int)$prod['id'] ?>" class="btn btn-sm btn-kg-outline flex-grow-1">Details</a>
-              <a href="<?= BASE_URL ?>/product-details.php?id=<?= (int)$prod['id'] ?>#order" class="btn btn-sm btn-kg-primary flex-grow-1">Order</a>
+              <button type="button" class="btn btn-sm btn-kg-primary flex-grow-1" onclick="addToCart(<?= (int)$prod['id'] ?>)">
+                <i class="bi bi-cart-plus"></i> Add
+              </button>
             </div>
           </div>
         </div>
@@ -120,14 +122,16 @@ require_once __DIR__ . '/includes/navbar.php';
     <div class="row g-4">
       <?php
       $reasons = [
-        ['icon'=>'shield-check-fill','title'=>'100% A2 Milk','desc'=>'All our products are made exclusively from the milk of our healthy indigenous A2 cows.'],
-        ['icon'=>'leaf-fill','title'=>'No Chemicals','desc'=>'No artificial preservatives, colours, or additives. Everything is natural and pure.'],
+        ['icon'=>'patch-check-fill','title'=>'100% A2 Milk','desc'=>'All our products are made exclusively from the milk of our healthy indigenous A2 cows.'],
+        ['icon'=>'shield-fill-check','title'=>'No Chemicals','desc'=>'No artificial preservatives, colours, or additives. Everything is natural and pure.'],
         ['icon'=>'flower2','title'=>'Traditional Methods','desc'=>'We use age-old Bilona and Ayurvedic techniques passed down through generations.'],
         ['icon'=>'award-fill','title'=>'Ethically Sourced','desc'=>'Our cows are never harmed. They live happy, healthy lives at our Goushala.'],
+        ['icon'=>'droplet-fill','title'=>'Fresh & Pure','desc'=>'Sourced daily and processed freshly to maintain maximum nutritional value and freshness.'],
+        ['icon'=>'heart-pulse-fill','title'=>'Health Benefits','desc'=>'Rich in nutrients, our A2 products support a healthy lifestyle and boost immunity.']
       ];
       foreach ($reasons as $r): ?>
-      <div class="col-md-6 col-lg-3">
-        <div class="kg-seva-card h-100">
+      <div class="col-md-6 col-lg-4">
+        <div class="kg-seva-card text-center" style="height:100%; border-color:var(--kg-border);">
           <div class="kg-seva-icon"><i class="bi bi-<?= $r['icon'] ?>"></i></div>
           <h5><?= e($r['title']) ?></h5>
           <p style="color:var(--kg-text-muted);font-size:.88rem;"><?= e($r['desc']) ?></p>

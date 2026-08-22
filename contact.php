@@ -96,13 +96,45 @@ require_once __DIR__ . '/includes/navbar.php';
           </li>
         </ul>
 
-        <!-- Map embed placeholder -->
-        <div class="mt-4 rounded-3 overflow-hidden" style="height:200px;background:var(--kg-green-pale);display:flex;align-items:center;justify-content:center;border:1px solid var(--kg-border);">
-          <div class="text-center" style="color:var(--kg-green);">
-            <i class="bi bi-map" style="font-size:2rem;"></i>
-            <p class="mb-0 mt-2" style="font-size:.85rem;">Dharmapur, Mysuru District<br>Karnataka — 571 201</p>
+        <!-- Social Media Links -->
+        <div class="mt-5 mb-4">
+          <h5 class="mb-3" style="color:var(--kg-green-dark); font-weight:600;">Connect With Us</h5>
+          <div class="d-flex gap-3">
+            <a href="#" class="social-icon-box" style="background:#E1306C;" title="Instagram">
+              <i class="bi bi-instagram"></i>
+            </a>
+            <a href="#" class="social-icon-box" style="background:#25D366;" title="WhatsApp">
+              <i class="bi bi-whatsapp"></i>
+            </a>
+            <a href="#" class="social-icon-box" style="background:#1877F2;" title="Facebook">
+              <i class="bi bi-facebook"></i>
+            </a>
+            <a href="#" class="social-icon-box" style="background:#000000;" title="Twitter / X">
+              <i class="bi bi-twitter-x"></i>
+            </a>
           </div>
         </div>
+        
+        <style>
+        .social-icon-box {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 45px;
+          height: 45px;
+          border-radius: 50%;
+          color: white;
+          font-size: 1.3rem;
+          text-decoration: none;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .social-icon-box:hover {
+          transform: translateY(-4px) scale(1.05);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+          color: white;
+        }
+        </style>
+
       </div>
 
       <!-- Contact Form -->
@@ -163,6 +195,19 @@ require_once __DIR__ . '/includes/navbar.php';
           </form>
         </div>
       </div>
+    </div>
+
+    <!-- Google Maps Embed Full Width -->
+    <div class="mt-5 rounded-4 shadow-sm overflow-hidden" style="border:1px solid var(--kg-border);">
+      <iframe 
+        src="https://maps.google.com/maps?q=Dharmapur,%20Mysuru%20District,%20Karnataka%20571201&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+        width="100%" 
+        height="450" 
+        style="border:0; display:block;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
   </div>
 </section>

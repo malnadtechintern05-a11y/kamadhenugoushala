@@ -17,52 +17,6 @@ $stmt->execute([':id' => $id]);
 $product = $stmt->fetch();
 if (!$product) redirect(BASE_URL . '/products.php');
 
-$errors = [];
-$old    = [];
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    csrf_validate();
-
-    $old = [
-        'customer_name'    => sanitize($_POST['customer_name']    ?? ''),
-        'customer_email'   => sanitize($_POST['customer_email']   ?? ''),
-        'customer_phone'   => sanitize($_POST['customer_phone']   ?? ''),
-        'customer_address' => sanitize($_POST['customer_address'] ?? ''),
-        'quantity'         => (int)($_POST['quantity']            ?? 1),
-        'payment_method'   => sanitize($_POST['payment_method']   ?? 'UPI'),
-        'notes'            => sanitize($_POST['notes']            ?? ''),
-    ];
-
-    $validPM = ['UPI','Bank Transfer','Cash on Delivery','Online','Other'];
-
-    if (empty($old['customer_name']))  $errors[] = 'Your name is required.';
-    if (empty($old['customer_email']) || !is_valid_email($old['customer_email'])) $errors[] = 'Valid email required.';
-    if (empty($old['customer_phone'])) $errors[] = 'Phone number is required.';
-    if (empty($old['customer_address'])) $errors[] = 'Delivery address is required.';
-    if ($old['quantity'] < 1) $errors[] = 'Quantity must be at least 1.';
-    if (!in_array($old['payment_method'], $validPM, true)) $errors[] = 'Invalid payment method.';
-    if ($old['quantity'] > (int)$product['stock_qty']) $errors[] = 'Quantity exceeds available stock.';
-
-    if (empty($errors)) {
-        $totalAmount = $old['quantity'] * (float)$product['price'];
-        $stmtIns = $pdo->prepare("
-            INSERT INTO orders (product_id, customer_name, customer_email, customer_phone, customer_address, quantity, total_amount, payment_method, notes, status)
-            VALUES (:product_id, :name, :email, :phone, :address, :qty, :total, :payment_method, :notes, 'Pending')
-        ");
-        $stmtIns->execute([
-            ':product_id'    => $id,
-            ':name'          => $old['customer_name'],
-            ':email'         => $old['customer_email'],
-            ':phone'         => $old['customer_phone'],
-            ':address'       => $old['customer_address'],
-            ':qty'           => $old['quantity'],
-            ':total'         => $totalAmount,
-            ':payment_method'=> $old['payment_method'],
-            ':notes'         => $old['notes'],
-        ]);
-        redirect(BASE_URL . '/thank-you.php?type=order');
-    }
-}
 
 $pageTitle  = e($product['name']) . ' — Products';
 $activePage = 'products';
@@ -120,89 +74,27 @@ require_once __DIR__ . '/includes/navbar.php';
 
         <!-- Order Form -->
         <div id="order" class="kg-form-card mt-0">
-          <h5 class="text-kg-green mb-3"><i class="bi bi-cart-fill me-2"></i>Place Your Order</h5>
-
-          <?php if (!empty($errors)): ?>
-          <div class="alert alert-danger">
-            <ul class="mb-0">
-              <?php foreach ($errors as $err): ?><li><?= e($err) ?></li><?php endforeach; ?>
-            </ul>
-          </div>
-          <?php endif; ?>
-
           <?php if ($product['stock_qty'] <= 0): ?>
           <div class="alert alert-warning">
             <i class="bi bi-exclamation-triangle me-2"></i>This product is currently out of stock. Please check back later.
           </div>
           <?php else: ?>
-          <form method="POST" action="" data-validate novalidate>
-            <?= csrf_field() ?>
-
-            <div class="row g-3">
-              <div class="col-md-6 mb-3">
-                <label for="customer_name" class="form-label">Your Name <span class="text-danger">*</span></label>
-                <input type="text" id="customer_name" name="customer_name" class="form-control"
-                       value="<?= e($old['customer_name'] ?? '') ?>" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="customer_email" class="form-label">Email <span class="text-danger">*</span></label>
-                <input type="email" id="customer_email" name="customer_email" class="form-control"
-                       value="<?= e($old['customer_email'] ?? '') ?>" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="customer_phone" class="form-label">Phone <span class="text-danger">*</span></label>
-                <input type="tel" id="customer_phone" name="customer_phone" class="form-control"
-                       value="<?= e($old['customer_phone'] ?? '') ?>" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="quantity" class="form-label">Quantity <span class="text-danger">*</span></label>
-                <input type="number" id="quantity" name="quantity" class="form-control"
-                       min="1" max="<?= (int)$product['stock_qty'] ?>"
-                       value="<?= (int)($old['quantity'] ?? 1) ?>" required
-                       oninput="updateTotal(this.value)">
-              </div>
+          <div class="d-flex flex-column gap-3">
+            <div>
+              <label for="quantity" class="form-label text-muted fw-bold mb-1">Quantity</label>
+              <input type="number" id="detail-quantity" class="form-control" style="max-width: 150px;"
+                     min="1" max="<?= (int)$product['stock_qty'] ?>"
+                     value="1">
             </div>
-
-            <div class="mb-3">
-              <label for="customer_address" class="form-label">Delivery Address <span class="text-danger">*</span></label>
-              <textarea name="customer_address" id="customer_address" class="form-control" rows="2" required><?= e($old['customer_address'] ?? '') ?></textarea>
-            </div>
-
-            <div class="row g-3">
-              <div class="col-md-6 mb-3">
-                <label for="payment_method" class="form-label">Payment Method</label>
-                <select name="payment_method" id="payment_method" class="form-select">
-                  <?php foreach (['UPI','Bank Transfer','Cash on Delivery','Online','Other'] as $pm): ?>
-                  <option value="<?= e($pm) ?>" <?= ($old['payment_method'] ?? 'UPI') === $pm ? 'selected':'' ?>><?= e($pm) ?></option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Total Amount</label>
-                <div class="form-control bg-light fw-700 text-kg-green" id="totalDisplay">
-                  <?= format_inr((float)$product['price']) ?>
-                </div>
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <label for="notes" class="form-label">Additional Notes</label>
-              <textarea name="notes" id="notes" class="form-control" rows="2"
-                        placeholder="Special delivery instructions, allergies, etc."><?= e($old['notes'] ?? '') ?></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-kg-primary w-100 py-3">
-              <i class="bi bi-cart-check me-2"></i>Place Order
+            <button type="button" class="btn btn-kg-primary py-3 px-4" style="max-width: 250px;" onclick="addDetailToCart(<?= (int)$product['id'] ?>)">
+              <i class="bi bi-cart-plus me-2"></i>Add to Cart
             </button>
-          </form>
+          </div>
 
           <script>
-          const unitPrice = <?= (float)$product['price'] ?>;
-          function updateTotal(qty) {
-            const q = parseInt(qty) || 1;
-            const total = (unitPrice * q).toFixed(2);
-            const formatted = '₹' + parseFloat(total).toLocaleString('en-IN', {minimumFractionDigits:2});
-            document.getElementById('totalDisplay').textContent = formatted;
+          function addDetailToCart(productId) {
+              const qty = document.getElementById('detail-quantity').value;
+              addToCart(productId, parseInt(qty));
           }
           </script>
           <?php endif; ?>

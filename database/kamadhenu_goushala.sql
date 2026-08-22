@@ -122,12 +122,10 @@ CREATE TABLE IF NOT EXISTS `products` (
 -- ─────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS `orders` (
   `id`               INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `product_id`       INT UNSIGNED NOT NULL,
   `customer_name`    VARCHAR(120) NOT NULL,
   `customer_email`   VARCHAR(120) NOT NULL,
   `customer_phone`   VARCHAR(20)  NOT NULL DEFAULT '',
   `customer_address` TEXT NOT NULL,
-  `quantity`         INT UNSIGNED NOT NULL DEFAULT 1,
   `total_amount`     DECIMAL(10,2) UNSIGNED NOT NULL,
   `payment_method`   ENUM('UPI','Bank Transfer','Cash on Delivery','Online','Other') NOT NULL DEFAULT 'UPI',
   `notes`            TEXT DEFAULT NULL,
@@ -135,9 +133,23 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `created_at`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `idx_orders_product_id` (`product_id`),
-  INDEX `idx_orders_status` (`status`),
-  CONSTRAINT `fk_orders_product`
+  INDEX `idx_orders_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ─────────────────────────────────────────────────────────────
+-- 6a. order_items
+-- ─────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS `order_items` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `order_id`   INT UNSIGNED NOT NULL,
+  `product_id` INT UNSIGNED NOT NULL,
+  `quantity`   INT UNSIGNED NOT NULL DEFAULT 1,
+  `price`      DECIMAL(10,2) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `idx_order_items_order_id` (`order_id`),
+  CONSTRAINT `fk_order_items_order`
+    FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_order_items_product`
     FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

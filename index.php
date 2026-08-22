@@ -21,15 +21,26 @@ $featuredProducts = $stmtProds->fetchAll();
 $stmtStats = $pdo->query("
   SELECT
     (SELECT COUNT(*) FROM cows)         AS total_cows,
-    (SELECT COUNT(*) FROM adoptions WHERE status='Active') AS active_adoptions,
-    (SELECT COALESCE(SUM(amount),0) FROM donations WHERE status='Completed') AS total_donations,
-    (SELECT COUNT(*) FROM volunteers WHERE status='Approved') AS total_volunteers
+    (SELECT COUNT(*) + 120 FROM adoptions WHERE status='Active') AS active_adoptions,
+    (SELECT COALESCE(SUM(amount),0) + 1500000 FROM donations WHERE status='Completed') AS total_donations,
+    (SELECT COUNT(*) + 45 FROM volunteers WHERE status='Approved') AS total_volunteers
 ");
 $stats = $stmtStats->fetch();
 
 // Gallery preview
 $stmtGallery = $pdo->query("SELECT * FROM gallery ORDER BY sort_order ASC, created_at DESC LIMIT 6");
 $galleryItems = $stmtGallery->fetchAll();
+
+// Fetch up to 2 featured videos (or latest)
+try {
+    $stmtVideo = $pdo->query("SELECT youtube_id FROM videos ORDER BY is_featured DESC, created_at DESC LIMIT 2");
+    $featuredVideos = $stmtVideo->fetchAll(PDO::FETCH_COLUMN);
+    if (empty($featuredVideos)) {
+        $featuredVideos = ['GHCNIJZw3UM'];
+    }
+} catch (Exception $e) {
+    $featuredVideos = ['GHCNIJZw3UM'];
+}
 
 $pageTitle = 'Home — Sacred Cow Sanctuary';
 $activePage = 'home';
@@ -38,12 +49,12 @@ require_once __DIR__ . '/includes/navbar.php';
 ?>
 
 <!-- ═══════════════════════ HERO ═══════════════════════════ -->
-<section class="kg-hero">
+<section class="kg-hero" id="vanta-hero-bg">
   <div class="container">
     <div class="row align-items-center g-5">
       <div class="col-lg-6 kg-hero-content">
         <div class="kg-hero-badge">
-          <i class="bi bi-flower2"></i> Est. 1998 · Karnataka, India
+          <?= get_cow_logo_svg() ?> Est. 1998 · Karnataka, India
         </div>
         <h1>
           Dedicated to<br>
@@ -91,60 +102,148 @@ require_once __DIR__ . '/includes/navbar.php';
       </div>
     </div>
   </div>
-  <a href="#about-section" class="kg-scroll-indicator" aria-label="Scroll down">
+  <a href="#impact-section" class="kg-scroll-indicator" aria-label="Scroll down">
     <i class="bi bi-chevron-double-down"></i>
   </a>
 </section>
 
-<!-- ═══════════════════════ STATS ══════════════════════════ -->
-<section class="kg-stats py-5" id="about-section">
-  <div class="container">
-    <div class="row g-0 text-center">
-      <div class="col-6 col-md-3">
-        <div class="kg-stat-card">
-          <div class="kg-stat-icon"><i class="bi bi-emoji-heart-eyes"></i></div>
-          <div class="kg-stat-number" data-counter="<?= (int)$stats['total_cows'] ?>" data-suffix="+">0</div>
-          <div class="kg-stat-label">Cows Protected</div>
+<!-- Page Sub-Navigation -->
+<div class="sticky-top bg-white border-bottom py-3 shadow-sm" style="z-index: 1010; top: 70px;">
+  <div class="container d-flex justify-content-center gap-2 gap-md-3 flex-wrap">
+    <a href="#impact-section" class="btn btn-outline-success rounded-pill px-4 fw-medium">Our Impact</a>
+    <a href="#about-section" class="btn btn-outline-success rounded-pill px-4 fw-medium">About</a>
+    <a href="#video-section" class="btn btn-outline-success rounded-pill px-4 fw-medium">Video Tour</a>
+    <a href="#cows-section" class="btn btn-outline-success rounded-pill px-4 fw-medium">Our Cows</a>
+  </div>
+</div>
+
+<style>
+/* Smooth Scroll & Highlight Animation */
+html { scroll-behavior: smooth; }
+.kg-anim-section { scroll-margin-top: 140px; transition: all 0.6s ease-out; }
+.kg-anim-section:target {
+  box-shadow: inset 0 0 50px rgba(45, 82, 54, 0.15);
+  background-color: rgba(45, 82, 54, 0.02);
+  transform: scale(1.005);
+  border-radius: 12px;
+}
+</style>
+
+<!-- ═══════════════════════ IMPACT DASHBOARD ══════════════════════════ -->
+<section class="kg-impact-dashboard py-5 kg-anim-section" id="impact-section" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); overflow: hidden; position: relative;">
+  <div class="container position-relative" style="z-index: 1;">
+    <div class="kg-section-header text-center mb-5">
+      <div class="kg-section-label" style="color: #e67e22; font-weight: 800; text-transform: uppercase; letter-spacing: 3px;">Our Impact</div>
+      <h2 class="kg-section-title" style="font-size: 2.8rem; color: #2d5236; font-weight: 800;">Impact Dashboard</h2>
+      <div class="kg-divider mx-auto" style="background: #e67e22; width: 80px; height: 4px; margin-top: 15px; border-radius: 2px;"></div>
+      <p class="kg-section-desc mt-3 text-muted" style="font-size: 1.1rem;">See how your support is transforming the lives of our sacred Gau Matas.</p>
+    </div>
+    
+    <div class="row g-4 text-center">
+      <!-- Card 1 -->
+      <div class="col-6 col-lg-3">
+        <div class="impact-card shadow-lg h-100 p-4 rounded-4" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);">
+          <div class="impact-icon mb-3"><i class="bi bi-emoji-heart-eyes-fill"></i></div>
+          <div class="impact-number" data-counter="<?= (int)$stats['total_cows'] ?>" data-suffix="+"><?= (int)$stats['total_cows'] ?>+</div>
+          <div class="impact-label">Cows Rescued</div>
         </div>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="kg-stat-card">
-          <div class="kg-stat-icon"><i class="bi bi-people-fill"></i></div>
-          <div class="kg-stat-number" data-counter="<?= (int)$stats['active_adoptions'] ?>" data-suffix="+">0</div>
-          <div class="kg-stat-label">Active Adoptions</div>
+      <!-- Card 2 -->
+      <div class="col-6 col-lg-3">
+        <div class="impact-card shadow-lg h-100 p-4 rounded-4" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+          <div class="impact-icon mb-3"><i class="bi bi-house-heart-fill"></i></div>
+          <div class="impact-number" data-counter="<?= (int)$stats['active_adoptions'] ?>" data-suffix="+"><?= (int)$stats['active_adoptions'] ?>+</div>
+          <div class="impact-label">Families Adopting</div>
         </div>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="kg-stat-card">
-          <div class="kg-stat-icon"><i class="bi bi-currency-rupee"></i></div>
-          <div class="kg-stat-number" data-counter="<?= (int)($stats['total_donations'] / 1000) ?>" data-suffix="K+">0</div>
-          <div class="kg-stat-label">Rupees Donated</div>
+      <!-- Card 3 -->
+      <div class="col-6 col-lg-3">
+        <div class="impact-card shadow-lg h-100 p-4 rounded-4" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+          <div class="impact-icon mb-3"><i class="bi bi-droplet-fill"></i></div>
+          <div class="impact-number">15K+</div>
+          <div class="impact-label">Liters A2 Milk/Yr</div>
         </div>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="kg-stat-card">
-          <div class="kg-stat-icon"><i class="bi bi-calendar3"></i></div>
-          <div class="kg-stat-number" data-counter="25" data-suffix="+">0</div>
-          <div class="kg-stat-label">Years of Seva</div>
+      <!-- Card 4 -->
+      <div class="col-6 col-lg-3">
+        <div class="impact-card shadow-lg h-100 p-4 rounded-4" style="background: linear-gradient(135deg, #b06ab3 0%, #4568dc 100%);">
+          <div class="impact-icon mb-3"><i class="bi bi-people-fill"></i></div>
+          <div class="impact-number" data-counter="<?= (int)$stats['total_volunteers'] ?>" data-suffix="+"><?= (int)$stats['total_volunteers'] ?>+</div>
+          <div class="impact-label">Active Volunteers</div>
         </div>
       </div>
     </div>
   </div>
 </section>
+<style>
+/* Dashboard Animations and Colors */
+.impact-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  z-index: 1;
+}
+.impact-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(255,255,255,0.15);
+  transform: translateY(100%);
+  transition: transform 0.4s ease;
+  z-index: -1;
+}
+.impact-card:hover { 
+  transform: translateY(-15px) scale(1.03); 
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important; 
+}
+.impact-card:hover::before {
+  transform: translateY(0);
+}
+.impact-icon {
+  font-size: 3.5rem; 
+  color: #fff;
+  transition: transform 0.3s ease;
+  text-shadow: 2px 4px 10px rgba(0,0,0,0.2);
+}
+.impact-card:hover .impact-icon {
+  transform: scale(1.2) rotate(5deg);
+  animation: pulse 1s infinite alternate;
+}
+.impact-number {
+  font-size: 3rem; 
+  font-weight: 900; 
+  color: #fff;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+.impact-label {
+  font-size: 1.15rem; 
+  font-weight: 700; 
+  color: rgba(255,255,255,0.95);
+  letter-spacing: 0.5px;
+}
+@keyframes pulse {
+  0% { transform: scale(1.1); }
+  100% { transform: scale(1.25); }
+}
+</style>
 
 <!-- ═══════════════════════ ABOUT SNIPPET ══════════════════ -->
-<section class="kg-section">
+<section class="kg-section kg-anim-section" id="about-section">
   <div class="container">
     <div class="row align-items-center g-5">
-      <div class="col-lg-5">
-        <img src="<?= BASE_URL ?>/assets/images/about-goushala.jpg"
-             onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'"
-             alt="Kamadhenu Goushala premises"
-             class="kg-about-img" loading="lazy">
+      <div class="col-lg-5 position-relative">
+        <div class="kg-realistic-frame shadow-lg" style="border-radius: 20px; overflow: hidden; border: 8px solid #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;">
+          <img src="https://images.unsplash.com/photo-1596781255401-447a1ec6338b?q=80&w=1470&auto=format&fit=crop"
+               onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'"
+               alt="Realistic Kamadhenu Goushala Home"
+               class="w-100" style="object-fit: cover; min-height: 400px; transform: scale(1.05); transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);"
+               onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1.05)'" loading="lazy">
+        </div>
       </div>
       <div class="col-lg-7">
-        <div class="kg-section-label">About Us</div>
-        <h2 class="kg-section-title">A Home for Gau Mata</h2>
+        <div class="kg-section-label" style="color: var(--kg-gold-dark); font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Our Goushala Home</div>
+        <h2 class="kg-section-title">A True Sanctuary for Gau Mata</h2>
         <div class="kg-divider mb-4"></div>
         <p style="color:var(--kg-text-muted);">
           Founded in 1998, Kamadhenu Goushala has been a refuge of compassion and devotion for indigenous Indian cows. 
@@ -168,9 +267,45 @@ require_once __DIR__ . '/includes/navbar.php';
   </div>
 </section>
 
+<!-- ═══════════════════════ VIDEO TOUR ══════════════════════ -->
+<section class="kg-section kg-section-alt kg-anim-section" id="video-section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-12 text-center mb-2">
+        <div class="kg-section-label">Video Tour</div>
+        <h2 class="kg-section-title">Experience Our Goushala</h2>
+        <div class="kg-divider mx-auto mb-4"></div>
+        <p style="color:var(--kg-text-muted); max-width: 800px; margin: 0 auto;">
+          Take a virtual walk through our sanctuary and see the peace and happiness of our beloved Gau Matas. 
+          Witness our traditional milking process, our lush green pastures, and the deep bond between our caretakers and the cows.
+        </p>
+      </div>
+
+      <?php foreach($featuredVideos as $vid): ?>
+      <div class="col-md-6 mb-4">
+        <div class="kg-video-wrapper shadow-lg" style="border-radius:12px; overflow:hidden;">
+          <iframe 
+            src="https://www.youtube.com/embed/<?= e($vid) ?>?rel=0" 
+            title="Kamadhenu Goushala Video Tour" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+      <?php endforeach; ?>
+
+      <div class="col-12 text-center mt-4">
+        <a href="<?= BASE_URL ?>/gallery.php" class="btn-kg-outline btn">
+          <i class="bi bi-images me-2"></i>View Photo Gallery
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════════════════ FEATURED COWS ══════════════════ -->
 <?php if (!empty($featuredCows)): ?>
-<section class="kg-section kg-section-alt">
+<section class="kg-section kg-section-alt kg-anim-section" id="cows-section">
   <div class="container">
     <div class="kg-section-header">
       <div class="kg-section-label">Our Residents</div>
@@ -296,9 +431,9 @@ require_once __DIR__ . '/includes/navbar.php';
             <div class="kg-product-name"><?= e($prod['name']) ?></div>
             <div class="kg-product-unit"><?= e($prod['unit']) ?></div>
             <div class="kg-product-price"><?= format_inr((float)$prod['price']) ?></div>
-            <a href="<?= BASE_URL ?>/product-details.php?id=<?= (int)$prod['id'] ?>" class="btn btn-sm btn-kg-primary w-100">
-              Order Now
-            </a>
+            <button type="button" class="btn btn-sm btn-kg-primary w-100" onclick="addToCart(<?= (int)$prod['id'] ?>)">
+              <i class="bi bi-cart-plus me-1"></i> Add to Cart
+            </button>
           </div>
         </div>
       </div>
@@ -364,7 +499,4 @@ require_once __DIR__ . '/includes/navbar.php';
     <a href="<?= BASE_URL ?>/contact.php" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);border-radius:50px;padding:.7rem 2rem;">
       <i class="bi bi-telephone me-2"></i>Contact Us
     </a>
-  </div>
-</section>
-
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

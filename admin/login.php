@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login | <?= SITE_NAME ?></title>
+  <link rel="icon" href="<?= BASE_URL ?>/assets/images/favicon.svg?v=3" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Serif:wght@700&display=swap" rel="stylesheet">
@@ -59,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="kg-login-card">
     <div class="text-center mb-4">
-      <div class="kg-login-logo"><i class="bi bi-flower2"></i></div>
+      <div class="kg-login-logo"><?= get_cow_logo_svg() ?></div>
       <h4 style="font-family:'Noto Serif',serif;color:#1b4332;">Kamadhenu Goushala</h4>
       <p style="color:#888;font-size:.85rem;margin:0;">Admin Panel</p>
     </div>

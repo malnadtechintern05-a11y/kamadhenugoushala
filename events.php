@@ -52,7 +52,7 @@ $pastEvents = $stmtPast->fetchAll();
           <div class="card h-100 shadow-sm border-0 bg-white" style="border-radius: 12px; overflow: hidden;">
             <div class="row g-0 h-100">
               <div class="col-md-5">
-                <img src="<?= img_url('events', $event['image']) ?>" class="img-fluid rounded-start h-100" alt="<?= e($event['title']) ?>" style="object-fit: contain; width: 100%; min-height: 250px; background-color: #f8f9fa;" onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'">
+                <img src="<?= img_url('events', $event['image']) ?>" class="img-fluid rounded-start h-100" alt="<?= e($event['title']) ?>" style="object-fit: cover; width: 100%; min-height: 250px; background-color: #f8f9fa;" onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'">
               </div>
               <div class="col-md-7 d-flex flex-column">
                 <div class="card-body d-flex flex-column h-100">
@@ -89,7 +89,7 @@ $pastEvents = $stmtPast->fetchAll();
       <?php foreach ($pastEvents as $event): ?>
         <div class="col-md-4">
           <div class="card h-100 shadow-sm border-0">
-            <img src="<?= img_url('events', $event['image']) ?>" class="card-img-top" alt="<?= e($event['title']) ?>" style="height: 200px; width: 100%; object-fit: contain; background-color: #f8f9fa;" onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'">
+            <img src="<?= img_url('events', $event['image']) ?>" class="card-img-top" alt="<?= e($event['title']) ?>" style="height: 200px; width: 100%; object-fit: cover; background-color: #f8f9fa;" onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'">
             <div class="card-body bg-light">
               <h6 class="card-title fw-bold mb-1 text-dark"><?= e($event['title']) ?></h6>
               <p class="text-muted small mb-0"><i class="bi bi-calendar-check me-1"></i> <?= date('d M Y', strtotime($event['event_date'])) ?></p>
