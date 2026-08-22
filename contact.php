@@ -100,16 +100,16 @@ require_once __DIR__ . '/includes/navbar.php';
         <div class="mt-5 mb-4">
           <h5 class="mb-3" style="color:var(--kg-green-dark); font-weight:600;">Connect With Us</h5>
           <div class="d-flex gap-3">
-            <a href="#" class="social-icon-box" style="background:#E1306C;" title="Instagram">
+            <a href="<?= e(defined('SOCIAL_INSTAGRAM') ? SOCIAL_INSTAGRAM : '#') ?>" class="social-icon-box" style="background:#E1306C;" title="Instagram" target="_blank">
               <i class="bi bi-instagram"></i>
             </a>
-            <a href="#" class="social-icon-box" style="background:#25D366;" title="WhatsApp">
+            <a href="<?= e(defined('SOCIAL_WHATSAPP') ? SOCIAL_WHATSAPP : '#') ?>" class="social-icon-box" style="background:#25D366;" title="WhatsApp" target="_blank">
               <i class="bi bi-whatsapp"></i>
             </a>
-            <a href="#" class="social-icon-box" style="background:#1877F2;" title="Facebook">
+            <a href="<?= e(defined('SOCIAL_FACEBOOK') ? SOCIAL_FACEBOOK : '#') ?>" class="social-icon-box" style="background:#1877F2;" title="Facebook" target="_blank">
               <i class="bi bi-facebook"></i>
             </a>
-            <a href="#" class="social-icon-box" style="background:#000000;" title="Twitter / X">
+            <a href="<?= e(defined('SOCIAL_TWITTER') ? SOCIAL_TWITTER : '#') ?>" class="social-icon-box" style="background:#000000;" title="Twitter / X" target="_blank">
               <i class="bi bi-twitter-x"></i>
             </a>
           </div>

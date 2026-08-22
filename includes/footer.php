@@ -12,18 +12,18 @@
           <div class="kg-footer-brand d-flex align-items-center gap-2 mb-3">
             <span class="kg-logo-icon-sm"><?= get_cow_logo_svg() ?></span>
             <span>
-              <span class="kg-footer-brand-main">Kamadhenu</span>
-              <span class="kg-footer-brand-sub"> Goushala</span>
+              <span class="kg-footer-brand-main"><?= e(explode(' ', SITE_NAME)[0] ?? 'Kamadhenu') ?></span>
+              <span class="kg-footer-brand-sub"> <?= e(implode(' ', array_slice(explode(' ', SITE_NAME), 1)) ?? 'Goushala') ?></span>
             </span>
           </div>
           <p class="kg-footer-desc">
-            A sacred sanctuary dedicated to the protection, care, and reverence of indigenous Indian cows (Gau Mata). Serving with devotion since 1998.
+            <?= e(SITE_TAGLINE) ?>
           </p>
           <div class="d-flex gap-3 mt-3">
-            <a href="#" class="kg-social-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="kg-social-link" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="kg-social-link" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-            <a href="#" class="kg-social-link" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+            <a href="<?= e(defined('SOCIAL_FACEBOOK') ? SOCIAL_FACEBOOK : '#') ?>" class="kg-social-link" aria-label="Facebook" target="_blank"><i class="bi bi-facebook"></i></a>
+            <a href="<?= e(defined('SOCIAL_INSTAGRAM') ? SOCIAL_INSTAGRAM : '#') ?>" class="kg-social-link" aria-label="Instagram" target="_blank"><i class="bi bi-instagram"></i></a>
+            <a href="<?= e(defined('SOCIAL_TWITTER') ? SOCIAL_TWITTER : '#') ?>" class="kg-social-link" aria-label="Twitter" target="_blank"><i class="bi bi-twitter-x"></i></a>
+            <a href="<?= e(defined('SOCIAL_WHATSAPP') ? SOCIAL_WHATSAPP : '#') ?>" class="kg-social-link" aria-label="WhatsApp" target="_blank"><i class="bi bi-whatsapp"></i></a>
           </div>
         </div>
 
@@ -280,5 +280,47 @@ html {
 iframe.VIpgJd-ZVi9od-aZ2wEe-wOHMyf { display: none !important; }
 </style>
 
+<script>
+// Animate elements smoothly on scroll
+document.addEventListener("DOMContentLoaded", function() {
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.15
+  };
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Auto-apply animation class to all sections and information blocks
+  const elementsToAnimate = document.querySelectorAll('section, .kg-section, .kg-cow-card, .impact-card, .kg-form-card, .kg-product-card, .kg-page-header, .kg-footer-top, .card, .gallery-item, .row > [class*="col-"]');
+  elementsToAnimate.forEach(el => {
+    el.classList.add('scroll-fade-up');
+    observer.observe(el);
+  });
+});
+
+// Preloader Logic
+window.addEventListener('load', function() {
+  const preloader = document.getElementById('kg-preloader');
+  // Only trigger the fade out animation if it wasn't hidden instantly in the header
+  if (preloader && preloader.style.display !== 'none') {
+    // Add a slight delay for dramatic effect
+    setTimeout(() => {
+      preloader.classList.add('fade-out');
+      // Remove it from the DOM after transition completes to free memory
+      setTimeout(() => {
+        preloader.remove();
+      }, 800);
+    }, 400);
+  }
+});
+</script>
 </body>
 </html>

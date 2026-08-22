@@ -56,6 +56,7 @@ function nav_active(string $page, string $current): string {
         <li class="nav-item">
           <a class="nav-link <?= nav_active('contact', $activePage) ?>" href="<?= BASE_URL ?>/contact.php">Contact</a>
         </li>
+
         <!-- Language Switcher -->
         <li class="nav-item dropdown ms-lg-2">
           <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

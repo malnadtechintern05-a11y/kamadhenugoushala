@@ -1103,11 +1103,134 @@ textarea.form-control { resize: vertical; min-height: 120px; }
   transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Page Load Smooth Fade In */
+/* Remove simple pageLoadFade, replaced by grand preloader */
 body {
-  animation: pageLoadFade 0.8s ease-out forwards;
+  animation: none;
 }
-@keyframes pageLoadFade {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+
+/* ================================================================
+   GRAND PRELOADER
+   ================================================================ */
+.kg-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: linear-gradient(135deg, var(--kg-green-dark) 0%, #0d2818 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
+}
+.kg-preloader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+.kg-preloader-content {
+  text-align: center;
+  animation: preloaderContentPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.kg-preloader-logo-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kg-preloader-logo {
+  width: 65px;
+  height: 65px;
+  position: relative;
+  z-index: 2;
+  animation: preloaderPulse 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 10px rgba(233, 168, 76, 0.5));
+}
+.kg-preloader-ring {
+  position: absolute;
+  inset: 0;
+  border: 3px solid rgba(233, 168, 76, 0.1);
+  border-top-color: var(--kg-gold);
+  border-bottom-color: var(--kg-gold);
+  border-radius: 50%;
+  animation: preloaderSpin 1.5s linear infinite;
+  z-index: 1;
+}
+.kg-preloader-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.kg-preloader-text-main {
+  font-family: 'Noto Serif', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--kg-gold-light) 0%, var(--kg-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.kg-preloader-text-sub {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+@keyframes preloaderSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes preloaderPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(233, 168, 76, 0.8)); }
+}
+@keyframes preloaderContentPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Scroll Animation Reveal */
+.scroll-fade-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: opacity, transform;
+}
+.scroll-fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ── Smooth Dropdown Menu Animation ───────────────────────────────────── */
+.smooth-dropdown {
+  display: block !important; /* Override Bootstrap's display: none */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  margin-top: 0; /* Prevent jumping */
+  border: none;
+  box-shadow: var(--kg-shadow-lg);
+  border-radius: var(--kg-radius-sm);
+  padding: 0.5rem;
+}
+.dropdown.show .smooth-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.smooth-dropdown .dropdown-item {
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-weight: 500;
+  color: var(--kg-text);
+  transition: var(--kg-transition);
+}
+.smooth-dropdown .dropdown-item:hover {
+  background-color: var(--kg-cream);
+  color: var(--kg-green-dark);
 }

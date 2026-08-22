@@ -32,6 +32,26 @@ HTML;
 </head>
 <body class="kg-admin-body">
 
+<!-- Grand Preloader -->
+<div id="kg-preloader" class="kg-preloader">
+  <div class="kg-preloader-content">
+    <div class="kg-preloader-logo-wrap">
+      <img src="<?= BASE_URL ?>/assets/images/favicon.svg" alt="Loading" class="kg-preloader-logo">
+      <div class="kg-preloader-ring"></div>
+    </div>
+    <div class="kg-preloader-text">
+      <span class="kg-preloader-text-main">Kamadhenu</span>
+      <span class="kg-preloader-text-sub">Admin Panel</span>
+    </div>
+  </div>
+</div>
+<script>
+// Check if the page was refreshed (reloaded). If not, hide preloader instantly.
+if (performance.navigation.type !== 1) {
+    document.getElementById('kg-preloader').style.display = 'none';
+}
+</script>
+
 <!-- Sidebar -->
 <aside class="kg-sidebar" id="adminSidebar">
   <div class="kg-sidebar-brand">

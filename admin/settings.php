@@ -42,6 +42,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+// Handle General Settings update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_general_settings') {
+    csrf_validate();
+
+    $settingsToUpdate = [
+        'SITE_NAME'        => $_POST['site_name'] ?? '',
+        'SITE_TAGLINE'     => $_POST['site_tagline'] ?? '',
+        'SITE_EMAIL'       => $_POST['site_email'] ?? '',
+        'SITE_PHONE'       => $_POST['site_phone'] ?? '',
+        'SITE_ADDRESS'     => $_POST['site_address'] ?? '',
+    ];
+
+    $configFile = __DIR__ . '/../config/config.php';
+    if (is_writable($configFile)) {
+        $configContent = file_get_contents($configFile);
+        foreach ($settingsToUpdate as $key => $value) {
+            $valueEscaped = str_replace("'", "\'", $value);
+            $pattern = "/define\(\s*['\"]" . preg_quote($key, '/') . "['\"]\s*,\s*['\"].*?['\"]\s*\);/is";
+            $replacement = "define('$key', '$valueEscaped');";
+            $configContent = preg_replace($pattern, $replacement, $configContent);
+        }
+        if (file_put_contents($configFile, $configContent)) {
+            header("Location: settings.php?success=general_updated");
+            exit;
+        } else {
+            $errors[] = 'Failed to write to config.php. Please try again.';
+        }
+    } else {
+        $errors[] = 'config.php is not writable. Check file permissions.';
+    }
+}
+
+// Handle Social Media Settings update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_social_settings') {
+    csrf_validate();
+
+    $settingsToUpdate = [
+        'SOCIAL_FACEBOOK'  => $_POST['social_facebook'] ?? '',
+        'SOCIAL_INSTAGRAM' => $_POST['social_instagram'] ?? '',
+        'SOCIAL_TWITTER'   => $_POST['social_twitter'] ?? '',
+        'SOCIAL_WHATSAPP'  => $_POST['social_whatsapp'] ?? '',
+    ];
+
+    $configFile = __DIR__ . '/../config/config.php';
+    if (is_writable($configFile)) {
+        $configContent = file_get_contents($configFile);
+        foreach ($settingsToUpdate as $key => $value) {
+            $valueEscaped = str_replace("'", "\'", $value);
+            $pattern = "/define\(\s*['\"]" . preg_quote($key, '/') . "['\"]\s*,\s*['\"].*?['\"]\s*\);/is";
+            $replacement = "define('$key', '$valueEscaped');";
+            $configContent = preg_replace($pattern, $replacement, $configContent);
+        }
+        if (file_put_contents($configFile, $configContent)) {
+            header("Location: settings.php?success=social_updated");
+            exit;
+        } else {
+            $errors[] = 'Failed to write to config.php. Please try again.';
+        }
+    } else {
+        $errors[] = 'config.php is not writable. Check file permissions.';
+    }
+}
+
+if (isset($_GET['success']) && $_GET['success'] === 'settings_updated') {
+    $settings_success = true;
+} else {
+    $settings_success = false;
+}
+
 $adminPageTitle  = 'Settings';
 $adminActivePage = 'settings';
 require_once __DIR__ . '/includes/admin_layout_header.php';
@@ -82,24 +151,85 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
     </div>
   </div>
 
-  <!-- Configuration Info -->
+  <!-- General Settings Info -->
   <div class="col-lg-6">
+    <div class="kg-admin-form-card h-100">
+      <h5 class="text-kg-green mb-4"><i class="bi bi-gear me-2"></i>General Settings</h5>
+      
+      <?php if (isset($_GET['success']) && $_GET['success'] === 'general_updated'): ?>
+      <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>General settings updated!</div>
+      <?php endif; ?>
+
+      <form method="POST" action="">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="update_general_settings">
+        
+        <div class="mb-3">
+          <label class="form-label">Site Name</label>
+          <input type="text" name="site_name" class="form-control" value="<?= e(SITE_NAME) ?>" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Tagline</label>
+          <input type="text" name="site_tagline" class="form-control" value="<?= e(SITE_TAGLINE) ?>">
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="site_email" class="form-control" value="<?= e(SITE_EMAIL) ?>">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Phone Number</label>
+            <input type="text" name="site_phone" class="form-control" value="<?= e(SITE_PHONE) ?>">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Physical Address</label>
+          <input type="text" name="site_address" class="form-control" value="<?= e(SITE_ADDRESS) ?>">
+        </div>
+
+        <button type="submit" class="btn btn-kg-primary w-100 mt-auto">
+          <i class="bi bi-save me-2"></i>Save General Settings
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Social Media Links -->
+  <div class="col-lg-12">
     <div class="kg-admin-form-card">
-      <h5 class="text-kg-green mb-4"><i class="bi bi-info-circle me-2"></i>Configuration</h5>
-      <table class="table table-sm table-borderless">
-        <tr><td class="fw-600 text-muted" style="width:140px;">Site Name</td><td><?= e(SITE_NAME) ?></td></tr>
-        <tr><td class="fw-600 text-muted">Base URL</td><td><code><?= e(BASE_URL) ?></code></td></tr>
-        <tr><td class="fw-600 text-muted">Site Email</td><td><?= e(SITE_EMAIL) ?></td></tr>
-        <tr><td class="fw-600 text-muted">Phone</td><td><?= e(SITE_PHONE) ?></td></tr>
-        <tr><td class="fw-600 text-muted">PHP Version</td><td><?= phpversion() ?></td></tr>
-        <tr><td class="fw-600 text-muted">Timezone</td><td><?= date_default_timezone_get() ?></td></tr>
-        <tr><td class="fw-600 text-muted">Max Upload</td><td>5 MB</td></tr>
-      </table>
-      <div class="kg-info-box mt-3">
-        <p class="mb-0" style="font-size:.85rem;color:var(--kg-green-dark);">
-          To update site settings, edit <code>config/config.php</code> directly on the server.
-        </p>
-      </div>
+      <h5 class="text-kg-green mb-4"><i class="bi bi-share me-2"></i>Social Media Links</h5>
+      
+      <?php if (isset($_GET['success']) && $_GET['success'] === 'social_updated'): ?>
+      <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Social links updated!</div>
+      <?php endif; ?>
+
+      <form method="POST" action="">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="update_social_settings">
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-facebook me-2 text-primary"></i>Facebook URL</label>
+            <input type="text" name="social_facebook" class="form-control" value="<?= e(defined('SOCIAL_FACEBOOK') ? SOCIAL_FACEBOOK : '') ?>" placeholder="https://facebook.com/yourpage">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-instagram me-2 text-danger"></i>Instagram URL</label>
+            <input type="text" name="social_instagram" class="form-control" value="<?= e(defined('SOCIAL_INSTAGRAM') ? SOCIAL_INSTAGRAM : '') ?>" placeholder="https://instagram.com/yourpage">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label"><i class="bi bi-twitter-x me-2"></i>Twitter URL</label>
+            <input type="text" name="social_twitter" class="form-control" value="<?= e(defined('SOCIAL_TWITTER') ? SOCIAL_TWITTER : '') ?>" placeholder="https://twitter.com/yourpage">
+          </div>
+          <div class="col-md-6 mb-4">
+            <label class="form-label"><i class="bi bi-whatsapp me-2 text-success"></i>WhatsApp Number</label>
+            <input type="text" name="social_whatsapp" class="form-control" value="<?= e(defined('SOCIAL_WHATSAPP') ? SOCIAL_WHATSAPP : '') ?>" placeholder="+919876543210">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-kg-primary w-100">
+          <i class="bi bi-save me-2"></i>Save Social Media Links
+        </button>
+      </form>
     </div>
   </div>
 </div>

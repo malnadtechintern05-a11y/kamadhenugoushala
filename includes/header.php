@@ -35,3 +35,23 @@ $pageDesc  = $pageDesc  ?? 'Kamadhenu Goushala — A sacred sanctuary dedicated 
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css?v=<?= time() ?>">
 </head>
 <body>
+
+<!-- Grand Preloader -->
+<div id="kg-preloader" class="kg-preloader">
+  <div class="kg-preloader-content">
+    <div class="kg-preloader-logo-wrap">
+      <img src="<?= BASE_URL ?>/assets/images/favicon.svg" alt="Loading" class="kg-preloader-logo">
+      <div class="kg-preloader-ring"></div>
+    </div>
+    <div class="kg-preloader-text">
+      <span class="kg-preloader-text-main">Kamadhenu</span>
+      <span class="kg-preloader-text-sub">Goushala</span>
+    </div>
+  </div>
+</div>
+<script>
+// Check if the page was refreshed (reloaded). If not, hide preloader instantly.
+if (performance.navigation.type !== 1) {
+    document.getElementById('kg-preloader').style.display = 'none';
+}
+</script>

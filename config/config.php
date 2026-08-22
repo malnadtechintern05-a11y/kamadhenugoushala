@@ -14,7 +14,10 @@ define('SITE_TAGLINE', 'Serving the Sacred Cow Since 1998');
 define('SITE_EMAIL',   'info@kamadhenugoushala.org');
 define('SITE_PHONE',   '+91 98765 43210');
 define('SITE_ADDRESS', 'Village Dharmapur, Dist. Mysuru, Karnataka — 571 201');
-
+define('SOCIAL_FACEBOOK', '#');
+define('SOCIAL_INSTAGRAM', '#');
+define('SOCIAL_TWITTER', '#');
+define('SOCIAL_WHATSAPP', '#');
 // ─── Upload Paths ─────────────────────────────────────────────────────────────
 define('UPLOAD_DIR',          __DIR__ . '/../uploads/');
 define('UPLOAD_COWS_DIR',     UPLOAD_DIR . 'cows/');
