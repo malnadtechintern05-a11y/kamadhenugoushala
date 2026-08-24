@@ -47,3 +47,11 @@ date_default_timezone_set('Asia/Kolkata');
 
 // ─── Placeholder Image ────────────────────────────────────────────────────────
 define('PLACEHOLDER_IMG', BASE_URL . '/assets/images/placeholder.jpg');
+
+// ─── Checkout Modes ───────────────────────────────────────────────────────────
+define('CHECKOUT_MODE_COWS', 'whatsapp');
+define('CHECKOUT_MODE_PRODUCTS', 'both');
+define('WA_DEFAULT_MSG_COWS', '');
+define('WA_DEFAULT_MSG_PRODUCTS', '');
+define('WA_PHONE_COWS', '');
+define('WA_PHONE_PRODUCTS', '');

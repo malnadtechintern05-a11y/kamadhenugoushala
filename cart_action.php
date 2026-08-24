@@ -105,9 +105,34 @@ HTML;
             <span>Total:</span>
             <span class="text-kg-green">{$total_fmt}</span>
         </div>
+HTML;
+    
+    if (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'both') {
+        $html .= <<<HTML
+        <div class="d-flex flex-column gap-2">
+            <a href="checkout.php" class="btn btn-kg-primary w-100 py-2">
+                <i class="bi bi-shield-lock me-2"></i>Secure Checkout
+            </a>
+            <a href="whatsapp_cart_redirect.php" target="_blank" class="btn btn-whatsapp w-100 py-2">
+                <i class="bi bi-whatsapp me-2"></i>Checkout via WhatsApp
+            </a>
+        </div>
+HTML;
+    } elseif (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'whatsapp') {
+        $html .= <<<HTML
+        <a href="whatsapp_cart_redirect.php" target="_blank" class="btn btn-whatsapp w-100 py-2">
+            <i class="bi bi-whatsapp me-2"></i>Checkout via WhatsApp
+        </a>
+HTML;
+    } else {
+        $html .= <<<HTML
         <a href="checkout.php" class="btn btn-kg-primary w-100 py-2">
             <i class="bi bi-shield-lock me-2"></i>Secure Checkout
         </a>
+HTML;
+    }
+    
+    $html .= <<<HTML
     </div>
 HTML;
 

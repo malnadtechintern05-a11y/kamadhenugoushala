@@ -53,10 +53,14 @@ echo flash_alert();
           <td><?= $p['is_active'] ? '<span class="kg-badge-green">Active</span>' : '<span class="kg-badge-red">Inactive</span>' ?></td>
           <td><?= $p['is_featured'] ? '<i class="bi bi-star-fill" style="color:var(--kg-gold-dark);"></i>' : '<i class="bi bi-star" style="color:#ccc;"></i>' ?></td>
           <td class="text-end">
-            <a href="<?= BASE_URL ?>/admin/product-edit.php?id=<?= (int)$p['id'] ?>" class="btn btn-sm" style="background:#dbeafe;color:#1d4ed8;border-radius:6px;" title="Edit"><i class="bi bi-pencil"></i></a>
+            <a href="<?= BASE_URL ?>/admin/product-edit.php?id=<?= (int)$p['id'] ?>" class="btn btn-sm kg-btn-action-edit" title="Edit">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
             <a href="<?= BASE_URL ?>/admin/product-delete.php?id=<?= (int)$p['id'] ?>&csrf_token=<?= urlencode(csrf_token()) ?>"
-               class="btn btn-sm ms-1" style="background:#fee2e2;color:#b91c1c;border-radius:6px;"
-               data-confirm="Delete product '<?= e($p['name']) ?>'?" title="Delete"><i class="bi bi-trash"></i></a>
+               class="btn btn-sm ms-1 kg-btn-action-delete"
+               data-confirm="Delete product '<?= e($p['name']) ?>'?" title="Delete">
+              <i class="bi bi-trash"></i> Delete
+            </a>
           </td>
         </tr>
         <?php endforeach; ?>

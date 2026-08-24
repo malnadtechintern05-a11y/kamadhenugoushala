@@ -467,7 +467,8 @@ img { max-width: 100%; height: auto; }
 .kg-product-card-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #f9fbf9;
   transition: transform .5s ease;
 }
 .kg-product-card:hover .kg-product-card-img img { transform: scale(1.08); }
@@ -772,7 +773,7 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 /* Sidebar */
 .kg-sidebar {
   width: 260px;
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(180deg, var(--kg-green-dark) 0%, #0d2818 100%);
   position: fixed;
   top: 0;
@@ -1233,4 +1234,131 @@ body {
 .smooth-dropdown .dropdown-item:hover {
   background-color: var(--kg-cream);
   color: var(--kg-green-dark);
+}
+
+/* Admin Action Buttons */
+.kg-btn-action-edit {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff !important;
+  border-radius: 50px;
+  padding: 0.35rem 0.8rem;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(37,99,235,0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.kg-btn-action-edit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(37,99,235,0.35);
+  color: #fff;
+}
+.kg-btn-action-delete {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff !important;
+  border-radius: 50px;
+  padding: 0.35rem 0.8rem;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(220,38,38,0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.kg-btn-action-delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(220,38,38,0.35);
+  color: #fff;
+}
+
+.btn-whatsapp {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--kg-radius-pill);
+    padding: .65rem 1.8rem;
+    font-weight: 600;
+    font-size: .9rem;
+    box-shadow: 0 4px 14px rgba(37,211,102,.35);
+    transition: var(--kg-transition);
+}
+.btn-whatsapp:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(37,211,102,.45);
+}
+
+@keyframes float3d {
+  0% { transform: perspective(1000px) translateY(20px) rotateX(15deg); opacity: 0; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+  100% { transform: perspective(1000px) translateY(0) rotateX(0deg); opacity: 1; box-shadow: 0 15px 35px rgba(45,106,79,0.15); }
+}
+.welcome-3d-anim {
+  animation: float3d 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+/* Dark Mode Overrides */
+[data-bs-theme="dark"] {
+    --kg-cream:       #121212;
+    --kg-cream-dark:  #1a1a1a;
+    --kg-white:       #212529;
+    --kg-text:        #e9ecef;
+    --kg-text-muted:  #adb5bd;
+    --kg-border:      #343a40;
+    --kg-green-pale:  #1e2b19;
+    --kg-shadow-sm:   0 4px 12px rgba(0, 0, 0, .5);
+    --kg-shadow-md:   0 8px 24px rgba(0, 0, 0, .6);
+    /* Lighter colors for dark mode to prevent text from disappearing */
+    --kg-green:       #6BA25D; /* Lighter green */
+    --kg-green-dark:  #8BC34A; /* Light green for labels */
+    --kg-brown:       #DFBC94; /* Light gold/brown */
+    --bs-body-color:  var(--kg-text); /* Ensure Bootstrap base color is overridden */
+}
+
+[data-bs-theme="dark"] body {
+    background-color: var(--kg-cream);
+    color: var(--kg-text);
+}
+
+[data-bs-theme="dark"] .kg-admin-sidebar {
+    background-color: var(--kg-white) !important;
+    border-right-color: var(--kg-border) !important;
+}
+
+[data-bs-theme="dark"] .kg-admin-topbar {
+    background-color: var(--kg-white) !important;
+    border-bottom-color: var(--kg-border) !important;
+}
+
+[data-bs-theme="dark"] .kg-admin-form-card,
+[data-bs-theme="dark"] .kg-dash-stat,
+[data-bs-theme="dark"] .card,
+[data-bs-theme="dark"] .kg-admin-table,
+[data-bs-theme="dark"] .modal-content {
+    background-color: var(--kg-white);
+    color: var(--kg-text);
+    border-color: var(--kg-border);
+}
+
+[data-bs-theme="dark"] .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--kg-text);
+    --bs-table-border-color: var(--kg-border);
+}
+
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+    background-color: #2b3035;
+    border-color: var(--kg-border);
+    color: var(--kg-text);
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: #2b3035;
+    color: var(--kg-text);
 }

@@ -74,6 +74,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+// Handle Checkout Settings update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_checkout_settings') {
+    csrf_validate();
+
+    $settingsToUpdate = [
+        'CHECKOUT_MODE_COWS'     => $_POST['checkout_mode_cows'] ?? 'website',
+        'CHECKOUT_MODE_PRODUCTS' => $_POST['checkout_mode_products'] ?? 'website',
+        'WA_DEFAULT_MSG_COWS'    => $_POST['wa_default_msg_cows'] ?? '',
+        'WA_DEFAULT_MSG_PRODUCTS'=> $_POST['wa_default_msg_products'] ?? '',
+        'WA_PHONE_COWS'          => preg_replace('/[^0-9]/', '', $_POST['wa_phone_cows'] ?? ''),
+        'WA_PHONE_PRODUCTS'      => preg_replace('/[^0-9]/', '', $_POST['wa_phone_products'] ?? ''),
+    ];
+
+    $configFile = __DIR__ . '/../config/config.php';
+    if (is_writable($configFile)) {
+        $configContent = file_get_contents($configFile);
+        foreach ($settingsToUpdate as $key => $value) {
+            $valueEscaped = str_replace("'", "\'", $value);
+            $pattern = "/define\(\s*['\"]" . preg_quote($key, '/') . "['\"]\s*,\s*['\"].*?['\"]\s*\);/is";
+            $replacement = "define('$key', '$valueEscaped');";
+            $configContent = preg_replace($pattern, $replacement, $configContent);
+        }
+        if (file_put_contents($configFile, $configContent)) {
+            header("Location: settings.php?success=checkout_updated");
+            exit;
+        } else {
+            $errors[] = 'Failed to write to config.php. Please try again.';
+        }
+    } else {
+        $errors[] = 'config.php is not writable. Check file permissions.';
+    }
+}
+
 // Handle Social Media Settings update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_social_settings') {
     csrf_validate();
@@ -117,43 +150,11 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
 ?>
 
 <div class="row g-4">
-  <!-- Change Password -->
-  <div class="col-lg-6">
+  <!-- Left Column -->
+  <div class="col-lg-6 d-flex flex-column gap-4">
+    
+    <!-- General Settings Info -->
     <div class="kg-admin-form-card">
-      <h5 class="text-kg-green mb-4"><i class="bi bi-lock me-2"></i>Change Password</h5>
-
-      <?php if ($success): ?>
-      <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Password changed successfully!</div>
-      <?php endif; ?>
-      <?php if (!empty($errors)): ?>
-      <div class="alert alert-danger"><ul class="mb-0"><?php foreach ($errors as $er): ?><li><?= e($er) ?></li><?php endforeach; ?></ul></div>
-      <?php endif; ?>
-
-      <form method="POST" action="">
-        <?= csrf_field() ?>
-        <input type="hidden" name="action" value="change_password">
-        <div class="mb-3">
-          <label class="form-label">Current Password</label>
-          <input type="password" name="current_password" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">New Password (min 8 characters)</label>
-          <input type="password" name="new_password" class="form-control" required minlength="8">
-        </div>
-        <div class="mb-4">
-          <label class="form-label">Confirm New Password</label>
-          <input type="password" name="confirm_password" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-kg-primary">
-          <i class="bi bi-check-circle me-2"></i>Update Password
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- General Settings Info -->
-  <div class="col-lg-6">
-    <div class="kg-admin-form-card h-100">
       <h5 class="text-kg-green mb-4"><i class="bi bi-gear me-2"></i>General Settings</h5>
       
       <?php if (isset($_GET['success']) && $_GET['success'] === 'general_updated'): ?>
@@ -192,10 +193,8 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
         </button>
       </form>
     </div>
-  </div>
 
-  <!-- Social Media Links -->
-  <div class="col-lg-12">
+    <!-- Social Media Links -->
     <div class="kg-admin-form-card">
       <h5 class="text-kg-green mb-4"><i class="bi bi-share me-2"></i>Social Media Links</h5>
       
@@ -231,7 +230,106 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
         </button>
       </form>
     </div>
-  </div>
+
+  </div> <!-- End Left Column -->
+
+  <!-- Right Column -->
+  <div class="col-lg-6 d-flex flex-column gap-4">
+    
+    <!-- Checkout Settings -->
+    <div class="kg-admin-form-card">
+      <h5 class="text-kg-green mb-4"><i class="bi bi-cart me-2"></i>Checkout Settings</h5>
+      
+      <?php if (isset($_GET['success']) && $_GET['success'] === 'checkout_updated'): ?>
+      <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Checkout settings updated!</div>
+      <?php endif; ?>
+
+      <form method="POST" action="">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="update_checkout_settings">
+        
+        <div class="mb-4">
+          <label class="form-label">Cow Adoptions Mode</label>
+          <select name="checkout_mode_cows" class="form-select">
+            <option value="website" <?= (defined('CHECKOUT_MODE_COWS') && CHECKOUT_MODE_COWS === 'website') ? 'selected' : '' ?>>Website Checkout System</option>
+            <option value="whatsapp" <?= (defined('CHECKOUT_MODE_COWS') && CHECKOUT_MODE_COWS === 'whatsapp') ? 'selected' : '' ?>>WhatsApp Redirect</option>
+          </select>
+          <div class="form-text">Choose how users adopt cows.</div>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label">Global Cow WhatsApp Message (Optional)</label>
+          <textarea name="wa_default_msg_cows" class="form-control" rows="2" placeholder="Hello, I want to adopt the cow: {cow_name}..."><?= e(defined('WA_DEFAULT_MSG_COWS') ? WA_DEFAULT_MSG_COWS : '') ?></textarea>
+          <div class="form-text">Use <code>{cow_name}</code> as a placeholder. This will be used if the specific cow doesn't have a custom message.</div>
+        </div>
+
+        <div class="mb-4 border-bottom pb-3">
+          <label class="form-label">Cow WhatsApp Number (Optional)</label>
+          <input type="text" name="wa_phone_cows" class="form-control" value="<?= e(defined('WA_PHONE_COWS') ? WA_PHONE_COWS : '') ?>" placeholder="e.g. 919876543210">
+          <div class="form-text">If left blank, the general site phone number will be used. Include country code.</div>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label">Product Purchases Mode</label>
+          <select name="checkout_mode_products" class="form-select">
+            <option value="website" <?= (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'website') ? 'selected' : '' ?>>Website Checkout System</option>
+            <option value="whatsapp" <?= (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'whatsapp') ? 'selected' : '' ?>>WhatsApp Redirect</option>
+            <option value="both" <?= (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'both') ? 'selected' : '' ?>>Both (Website & WhatsApp)</option>
+          </select>
+          <div class="form-text">Choose how users buy products.</div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Global Product WhatsApp Message (Optional)</label>
+          <textarea name="wa_default_msg_products" class="form-control" rows="2" placeholder="Hello, I want to buy {qty}x {product_name}..."><?= e(defined('WA_DEFAULT_MSG_PRODUCTS') ? WA_DEFAULT_MSG_PRODUCTS : '') ?></textarea>
+          <div class="form-text">Use <code>{product_name}</code>, <code>{qty}</code>, and <code>{price}</code> as placeholders.</div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Product WhatsApp Number (Optional)</label>
+          <input type="text" name="wa_phone_products" class="form-control" value="<?= e(defined('WA_PHONE_PRODUCTS') ? WA_PHONE_PRODUCTS : '') ?>" placeholder="e.g. 919876543210">
+          <div class="form-text">If left blank, the general site phone number will be used. Include country code.</div>
+        </div>
+
+        <button type="submit" class="btn btn-kg-primary w-100 mt-auto">
+          <i class="bi bi-save me-2"></i>Save Checkout Settings
+        </button>
+      </form>
+    </div>
+
+    <!-- Change Password -->
+    <div class="kg-admin-form-card">
+      <h5 class="text-kg-green mb-4"><i class="bi bi-lock me-2"></i>Change Password</h5>
+
+      <?php if ($success): ?>
+      <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Password changed successfully!</div>
+      <?php endif; ?>
+      <?php if (!empty($errors)): ?>
+      <div class="alert alert-danger"><ul class="mb-0"><?php foreach ($errors as $er): ?><li><?= e($er) ?></li><?php endforeach; ?></ul></div>
+      <?php endif; ?>
+
+      <form method="POST" action="">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="change_password">
+        <div class="mb-3">
+          <label class="form-label">Current Password</label>
+          <input type="password" name="current_password" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">New Password (min 8 characters)</label>
+          <input type="password" name="new_password" class="form-control" required minlength="8">
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" name="confirm_password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-kg-primary w-100">
+          <i class="bi bi-check-circle me-2"></i>Update Password
+        </button>
+      </form>
+    </div>
+
+  </div> <!-- End Right Column -->
 </div>
 
 <?php require_once __DIR__ . '/includes/admin_layout_footer.php'; ?>

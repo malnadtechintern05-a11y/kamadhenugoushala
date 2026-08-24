@@ -42,9 +42,6 @@ function nav_active(string $page, string $current): string {
           <a class="nav-link <?= nav_active('seva', $activePage) ?>" href="<?= BASE_URL ?>/seva.php">Seva</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= nav_active('adopt', $activePage) ?>" href="<?= BASE_URL ?>/adopt.php">Adopt</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link <?= nav_active('products', $activePage) ?>" href="<?= BASE_URL ?>/products.php">Products</a>
         </li>
         <li class="nav-item">
@@ -69,7 +66,7 @@ function nav_active(string $page, string $current): string {
           </ul>
         </li>
         <li class="nav-item ms-lg-2 position-relative">
-          <a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas" title="View Cart">
+          <a class="nav-link" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas" title="View Cart">
             <i class="bi bi-cart3 fs-5"></i>
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-count-badge" style="font-size: 0.65rem; margin-top: 10px; margin-left: -10px; display: <?= get_cart_count() > 0 ? 'inline-block' : 'none' ?>;">
               <?= get_cart_count() ?>

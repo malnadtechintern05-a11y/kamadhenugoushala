@@ -134,9 +134,15 @@ require_once __DIR__ . '/includes/navbar.php';
                 View Details
               </a>
               <?php if ($cow['adoption_status'] === 'Available'): ?>
+              <?php if (defined('CHECKOUT_MODE_COWS') && CHECKOUT_MODE_COWS === 'whatsapp'): ?>
+              <a href="<?= BASE_URL ?>/whatsapp_redirect.php?cow_id=<?= (int)$cow['id'] ?>" target="_blank" class="btn btn-sm btn-kg-gold flex-grow-1">
+                Adopt
+              </a>
+              <?php else: ?>
               <a href="<?= BASE_URL ?>/adopt.php?cow_id=<?= (int)$cow['id'] ?>" class="btn btn-sm btn-kg-gold">
                 Adopt
               </a>
+              <?php endif; ?>
               <?php endif; ?>
             </div>
           </div>

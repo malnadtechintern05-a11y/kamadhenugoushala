@@ -66,9 +66,7 @@ require_once __DIR__ . '/includes/navbar.php';
           Every cow here is family. Join us in this divine service.
         </p>
         <div class="kg-hero-actions">
-          <a href="<?= BASE_URL ?>/adopt.php" class="btn-kg-gold btn">
-            <i class="bi bi-heart-fill me-2"></i>Adopt a Cow
-          </a>
+
           <a href="<?= BASE_URL ?>/donate.php" class="btn-kg-outline btn" style="border-color:rgba(255,255,255,.6);color:#fff;">
             <i class="bi bi-gift me-2"></i>Donate Now
           </a>
@@ -303,58 +301,7 @@ html { scroll-behavior: smooth; }
   </div>
 </section>
 
-<!-- ═══════════════════════ FEATURED COWS ══════════════════ -->
-<?php if (!empty($featuredCows)): ?>
-<section class="kg-section kg-section-alt kg-anim-section" id="cows-section">
-  <div class="container">
-    <div class="kg-section-header">
-      <div class="kg-section-label">Our Residents</div>
-      <h2 class="kg-section-title">Meet Our Sacred Cows</h2>
-      <div class="kg-divider"></div>
-      <p class="kg-section-desc mt-3">Each cow at our Goushala has a name, a story, and a home. Come meet them.</p>
-    </div>
-    <div class="row g-4">
-      <?php foreach ($featuredCows as $cow): ?>
-      <div class="col-md-6 col-lg-4">
-        <div class="kg-cow-card">
-          <div class="kg-cow-card-img">
-            <img src="<?= img_url('cows', $cow['image']) ?>"
-                 alt="<?= e($cow['name']) ?>"
-                 loading="lazy"
-                 onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'">
-            <?php
-              $badgeClass = match($cow['adoption_status']) {
-                'Available'     => 'available',
-                'Adopted'       => 'adopted',
-                default         => 'unavailable',
-              };
-            ?>
-            <span class="kg-cow-card-badge <?= $badgeClass ?>"><?= e($cow['adoption_status']) ?></span>
-          </div>
-          <div class="kg-cow-card-body">
-            <h3 class="kg-cow-card-name"><?= e($cow['name']) ?></h3>
-            <p class="kg-cow-card-breed"><?= e($cow['breed']) ?></p>
-            <div class="kg-cow-card-meta">
-              <span><i class="bi bi-calendar3"></i> <?= (int)$cow['age'] ?> yrs</span>
-              <span><i class="bi bi-gender-ambiguous"></i> <?= e($cow['gender']) ?></span>
-              <span><i class="bi bi-palette"></i> <?= e($cow['color']) ?></span>
-            </div>
-            <a href="<?= BASE_URL ?>/cow-details.php?id=<?= (int)$cow['id'] ?>" class="btn btn-sm btn-kg-primary w-100">
-              View Details
-            </a>
-          </div>
-        </div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-    <div class="text-center mt-5">
-      <a href="<?= BASE_URL ?>/cows.php" class="btn-kg-outline btn">
-        <i class="bi bi-grid me-2"></i>View All Cows
-      </a>
-    </div>
-  </div>
-</section>
-<?php endif; ?>
+
 
 <!-- ═══════════════════════ SEVA CARDS ═════════════════════ -->
 <section class="kg-section">
@@ -365,41 +312,32 @@ html { scroll-behavior: smooth; }
       <div class="kg-divider"></div>
       <p class="kg-section-desc mt-3">Every act of kindness — big or small — makes a difference for our sacred cows.</p>
     </div>
-    <div class="row g-4">
-      <div class="col-md-6 col-lg-3">
-        <div class="kg-seva-card">
-          <div class="kg-seva-icon"><i class="bi bi-heart-fill"></i></div>
-          <h4>Adopt a Cow</h4>
-          <div class="kg-seva-amount">₹1,500/month</div>
-          <p style="color:var(--kg-text-muted);font-size:.88rem;">Sponsor the full care of a cow — food, shelter, medical. Receive blessings and monthly updates.</p>
-          <a href="<?= BASE_URL ?>/adopt.php" class="btn btn-sm btn-kg-primary mt-2">Adopt Now</a>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="kg-seva-card">
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4">
+        <div class="kg-seva-card h-100">
           <div class="kg-seva-icon"><i class="bi bi-bag-heart-fill"></i></div>
           <h4>Feed a Cow</h4>
           <div class="kg-seva-amount">₹500/day</div>
           <p style="color:var(--kg-text-muted);font-size:.88rem;">Donate a day's feed for our cows. Includes green fodder, dry fodder, and mineral supplements.</p>
-          <a href="<?= BASE_URL ?>/donate.php" class="btn btn-sm btn-kg-primary mt-2">Donate Feed</a>
+          <a href="<?= BASE_URL ?>/donate.php" class="btn btn-sm btn-kg-primary mt-auto">Donate Feed</a>
         </div>
       </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="kg-seva-card">
+      <div class="col-md-4">
+        <div class="kg-seva-card h-100">
           <div class="kg-seva-icon"><i class="bi bi-activity"></i></div>
           <h4>Medical Seva</h4>
           <div class="kg-seva-amount">₹2,000+</div>
           <p style="color:var(--kg-text-muted);font-size:.88rem;">Help pay for veterinary care, medicines, and surgeries for injured or sick cows in our care.</p>
-          <a href="<?= BASE_URL ?>/donate.php" class="btn btn-sm btn-kg-primary mt-2">Support Health</a>
+          <a href="<?= BASE_URL ?>/donate.php" class="btn btn-sm btn-kg-primary mt-auto">Support Health</a>
         </div>
       </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="kg-seva-card">
+      <div class="col-md-4">
+        <div class="kg-seva-card h-100">
           <div class="kg-seva-icon"><i class="bi bi-people-fill"></i></div>
           <h4>Volunteer</h4>
           <div class="kg-seva-amount">Your Time</div>
           <p style="color:var(--kg-text-muted);font-size:.88rem;">Give your time and energy to directly serve the cows. Weekends, holidays or full-time — all welcome.</p>
-          <a href="<?= BASE_URL ?>/volunteer.php" class="btn btn-sm btn-kg-primary mt-2">Join Us</a>
+          <a href="<?= BASE_URL ?>/volunteer.php" class="btn btn-sm btn-kg-primary mt-auto">Join Us</a>
         </div>
       </div>
     </div>
@@ -418,7 +356,7 @@ html { scroll-behavior: smooth; }
     </div>
     <div class="row g-4">
       <?php foreach ($featuredProducts as $prod): ?>
-      <div class="col-md-6 col-lg-3">
+      <div class="col-md-6 col-lg-4">
         <div class="kg-product-card">
           <div class="kg-product-card-img">
             <img src="<?= img_url('products', $prod['image']) ?>"
@@ -431,9 +369,24 @@ html { scroll-behavior: smooth; }
             <div class="kg-product-name"><?= e($prod['name']) ?></div>
             <div class="kg-product-unit"><?= e($prod['unit']) ?></div>
             <div class="kg-product-price"><?= format_inr((float)$prod['price']) ?></div>
+            <?php if (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'both'): ?>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-kg-primary flex-grow-1" onclick="addToCart(<?= (int)$prod['id'] ?>)">
+                <i class="bi bi-cart-plus me-1"></i> Cart
+              </button>
+              <a href="<?= BASE_URL ?>/whatsapp_product_redirect.php?product_id=<?= (int)$prod['id'] ?>" target="_blank" class="btn btn-sm btn-whatsapp flex-grow-1">
+                <i class="bi bi-whatsapp me-1"></i> Buy
+              </a>
+            </div>
+            <?php elseif (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'whatsapp'): ?>
+            <a href="<?= BASE_URL ?>/whatsapp_product_redirect.php?product_id=<?= (int)$prod['id'] ?>" target="_blank" class="btn btn-sm btn-whatsapp w-100">
+              <i class="bi bi-whatsapp me-1"></i> Buy via WhatsApp
+            </a>
+            <?php else: ?>
             <button type="button" class="btn btn-sm btn-kg-primary w-100" onclick="addToCart(<?= (int)$prod['id'] ?>)">
               <i class="bi bi-cart-plus me-1"></i> Add to Cart
             </button>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -499,4 +452,6 @@ html { scroll-behavior: smooth; }
     <a href="<?= BASE_URL ?>/contact.php" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);border-radius:50px;padding:.7rem 2rem;">
       <i class="bi bi-telephone me-2"></i>Contact Us
     </a>
+  </div>
+</section>
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

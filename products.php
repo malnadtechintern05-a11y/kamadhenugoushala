@@ -65,7 +65,7 @@ require_once __DIR__ . '/includes/navbar.php';
     <?php else: ?>
     <div class="row g-4">
       <?php foreach ($pagData['items'] as $prod): ?>
-      <div class="col-md-6 col-lg-3">
+      <div class="col-md-6 col-lg-4">
         <div class="kg-product-card">
           <div class="kg-product-card-img">
             <img src="<?= img_url('products', $prod['image']) ?>"
@@ -90,11 +90,26 @@ require_once __DIR__ . '/includes/navbar.php';
               <small class="kg-badge-red">Out of Stock</small>
               <?php endif; ?>
             </div>
-            <div class="d-flex gap-2">
-              <a href="<?= BASE_URL ?>/product-details.php?id=<?= (int)$prod['id'] ?>" class="btn btn-sm btn-kg-outline flex-grow-1">Details</a>
-              <button type="button" class="btn btn-sm btn-kg-primary flex-grow-1" onclick="addToCart(<?= (int)$prod['id'] ?>)">
-                <i class="bi bi-cart-plus"></i> Add
+            <div class="d-flex flex-column gap-2 mt-3">
+              <a href="<?= BASE_URL ?>/product-details.php?id=<?= (int)$prod['id'] ?>" class="btn btn-sm btn-kg-outline w-100">Details</a>
+              <?php if (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'both'): ?>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-kg-primary flex-grow-1" onclick="addToCart(<?= (int)$prod['id'] ?>)">
+                  <i class="bi bi-cart-plus"></i> Cart
+                </button>
+                <a href="<?= BASE_URL ?>/whatsapp_product_redirect.php?product_id=<?= (int)$prod['id'] ?>" target="_blank" class="btn btn-sm btn-whatsapp flex-grow-1">
+                  <i class="bi bi-whatsapp"></i> Buy
+                </a>
+              </div>
+              <?php elseif (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'whatsapp'): ?>
+              <a href="<?= BASE_URL ?>/whatsapp_product_redirect.php?product_id=<?= (int)$prod['id'] ?>" target="_blank" class="btn btn-sm btn-whatsapp w-100">
+                <i class="bi bi-whatsapp"></i> Buy via WhatsApp
+              </a>
+              <?php else: ?>
+              <button type="button" class="btn btn-sm btn-kg-primary w-100" onclick="addToCart(<?= (int)$prod['id'] ?>)">
+                <i class="bi bi-cart-plus me-1"></i> Add to Cart
               </button>
+              <?php endif; ?>
             </div>
           </div>
         </div>

@@ -17,6 +17,18 @@ if ($id <= 0) {
     redirect(BASE_URL . '/admin/orders.php');
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_status') {
+    csrf_validate();
+    $newStatus = sanitize($_POST['status']);
+    if (in_array($newStatus, ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'])) {
+        $pdo->prepare("UPDATE orders SET status = :status WHERE id = :id")->execute([
+            ':status' => $newStatus,
+            ':id' => $id
+        ]);
+        redirect(BASE_URL . '/admin/order-details.php?id=' . $id . '&msg=updated');
+    }
+}
+
 $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = :id");
 $stmt->execute([':id' => $id]);
 $order = $stmt->fetch();
@@ -43,17 +55,21 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
     <a href="<?= BASE_URL ?>/admin/orders.php" class="btn btn-sm btn-kg-outline">
         <i class="bi bi-arrow-left"></i> Back to Orders
     </a>
-    <?php
-      $badgeClass = match($order['status']) {
-          'Delivered' => 'kg-badge-green',
-          'Shipped' => 'kg-badge-gold',
-          'Confirmed' => 'kg-badge-gold',
-          'Cancelled' => 'kg-badge-red',
-          default => 'kg-badge-gold'
-      };
-    ?>
-    <span class="<?= $badgeClass ?> fs-6"><?= e($order['status']) ?></span>
+    <form method="POST" action="" class="d-flex align-items-center gap-2">
+      <?= csrf_field() ?>
+      <input type="hidden" name="action" value="update_status">
+      <select name="status" class="form-select form-select-sm" style="width: auto;">
+        <?php foreach(['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'] as $s): ?>
+        <option value="<?= $s ?>" <?= $order['status'] === $s ? 'selected' : '' ?>><?= $s ?></option>
+        <?php endforeach; ?>
+      </select>
+      <button type="submit" class="btn btn-sm btn-kg-primary">Update Status</button>
+    </form>
 </div>
+
+<?php if (isset($_GET['msg']) && $_GET['msg'] === 'updated'): ?>
+<div class="alert alert-success py-2">Order status updated successfully.</div>
+<?php endif; ?>
 
 <div class="row g-4">
     <!-- Order Summary -->

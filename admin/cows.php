@@ -74,13 +74,13 @@ echo flash_alert();
           </td>
           <td><?= $cow['is_featured'] ? '<i class="bi bi-star-fill" style="color:var(--kg-gold-dark);"></i>' : '<i class="bi bi-star" style="color:#ccc;"></i>' ?></td>
           <td class="text-end">
-            <a href="<?= BASE_URL ?>/admin/cow-edit.php?id=<?= (int)$cow['id'] ?>" class="btn btn-sm" style="background:#dbeafe;color:#1d4ed8;border-radius:6px;" title="Edit">
-              <i class="bi bi-pencil"></i>
+            <a href="<?= BASE_URL ?>/admin/cow-edit.php?id=<?= (int)$cow['id'] ?>" class="btn btn-sm kg-btn-action-edit" title="Edit">
+              <i class="bi bi-pencil"></i> Edit
             </a>
             <a href="<?= BASE_URL ?>/admin/cow-delete.php?id=<?= (int)$cow['id'] ?>&csrf_token=<?= urlencode(csrf_token()) ?>"
-               class="btn btn-sm ms-1" style="background:#fee2e2;color:#b91c1c;border-radius:6px;"
+               class="btn btn-sm ms-1 kg-btn-action-delete"
                data-confirm="Delete cow '<?= e($cow['name']) ?>'? This cannot be undone." title="Delete">
-              <i class="bi bi-trash"></i>
+              <i class="bi bi-trash"></i> Delete
             </a>
           </td>
         </tr>

@@ -1,0 +1,10 @@
+
+@keyframes float3d {
+  0% { transform: perspective(1000px) translateY(20px) rotateX(15deg); opacity: 0; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+  100% { transform: perspective(1000px) translateY(0) rotateX(0deg); opacity: 1; box-shadow: 0 15px 35px rgba(45,106,79,0.15); }
+}
+.welcome-3d-anim {
+  animation: float3d 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}

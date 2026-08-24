@@ -1,0 +1,17 @@
+
+.btn-whatsapp {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--kg-radius-pill);
+    padding: .65rem 1.8rem;
+    font-weight: 600;
+    font-size: .9rem;
+    box-shadow: 0 4px 14px rgba(37,211,102,.35);
+    transition: var(--kg-transition);
+}
+.btn-whatsapp:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(37,211,102,.45);
+}

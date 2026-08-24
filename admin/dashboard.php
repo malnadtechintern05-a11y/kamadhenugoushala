@@ -40,6 +40,21 @@ $adminActivePage = 'dashboard';
 require_once __DIR__ . '/includes/admin_layout_header.php';
 ?>
 
+<!-- Welcome Greeting -->
+<div class="kg-admin-form-card mb-4 welcome-3d-anim" style="background: linear-gradient(135deg, var(--kg-green-pale) 0%, #ffffff 100%); border-left: 5px solid var(--kg-green);">
+  <div class="d-flex align-items-center">
+    <div class="me-3">
+      <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 60px; height: 60px; background: var(--kg-green); color: white; font-size: 1.5rem;">
+        <i class="bi bi-person-fill"></i>
+      </div>
+    </div>
+    <div>
+      <h3 class="mb-1 fw-bold text-kg-green">Welcome back, Admin!</h3>
+      <p class="mb-0 text-muted">Here is what's happening at <?= e(SITE_NAME) ?> today. Have a wonderful day managing the Goushala!</p>
+    </div>
+  </div>
+</div>
+
 <!-- Stat Cards Row 1 -->
 <div class="row g-4 mb-4">
   <div class="col-6 col-md-3">
@@ -143,15 +158,17 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
   </div>
   <?php
   $actions = [
-    ['href'=>BASE_URL.'/admin/cow-add.php',     'icon'=>'plus-circle',     'label'=>'Add Cow',      'color'=>'var(--kg-green)'],
-    ['href'=>BASE_URL.'/admin/product-add.php',  'icon'=>'plus-circle',     'label'=>'Add Product',  'color'=>'#7c3aed'],
-    ['href'=>BASE_URL.'/admin/gallery-add.php',  'icon'=>'image',           'label'=>'Add Photo',    'color'=>'#0f766e'],
-    ['href'=>BASE_URL.'/admin/messages.php',     'icon'=>'envelope-open',   'label'=>'View Messages','color'=>'#b91c1c'],
-    ['href'=>BASE_URL.'/admin/donations.php',    'icon'=>'currency-rupee',  'label'=>'Donations',    'color'=>'#a16207'],
-    ['href'=>BASE_URL.'/admin/adoptions.php',    'icon'=>'heart',           'label'=>'Adoptions',    'color'=>'#1d4ed8'],
+    ['href'=>BASE_URL.'/admin/cow-add.php',      'icon'=>'plus-circle',     'label'=>'Add Cow',       'color'=>'var(--kg-green)'],
+    ['href'=>BASE_URL.'/admin/product-add.php',  'icon'=>'plus-circle',     'label'=>'Add Product',   'color'=>'#7c3aed'],
+    ['href'=>BASE_URL.'/admin/whatsapp-logs.php','icon'=>'whatsapp',        'label'=>'WhatsApp Logs', 'color'=>'#25D366'],
+    ['href'=>BASE_URL.'/admin/gallery-add.php',  'icon'=>'image',           'label'=>'Add Photo',     'color'=>'#0f766e'],
+    ['href'=>BASE_URL.'/admin/messages.php',     'icon'=>'envelope-open',   'label'=>'Messages',      'color'=>'#b91c1c'],
+    ['href'=>BASE_URL.'/admin/donations.php',    'icon'=>'currency-rupee',  'label'=>'Donations',     'color'=>'#a16207'],
+    ['href'=>BASE_URL.'/admin/adoptions.php',    'icon'=>'heart',           'label'=>'Adoptions',     'color'=>'#1d4ed8'],
+    ['href'=>BASE_URL.'/admin/orders.php',       'icon'=>'cart-check',      'label'=>'Orders',        'color'=>'#f59e0b'],
   ];
   foreach ($actions as $a): ?>
-  <div class="col-6 col-md-2">
+  <div class="col-6 col-md-3">
     <a href="<?= $a['href'] ?>" class="d-flex flex-column align-items-center justify-content-center p-3 bg-white rounded-3 shadow-sm text-decoration-none h-100" style="border:1px solid #e5e7eb;transition:all .2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
       <i class="bi bi-<?= $a['icon'] ?>" style="font-size:1.6rem;color:<?= $a['color'] ?>;"></i>
       <span style="font-size:.78rem;font-weight:600;color:#374151;margin-top:.4rem;"><?= e($a['label']) ?></span>

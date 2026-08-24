@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo = getDBConnection();
         $stmt = $pdo->prepare("
             INSERT INTO donations (donor_name, donor_email, donor_phone, amount, purpose, payment_method, transaction_id, message, status)
-            VALUES (:name, :email, :phone, :amount, :purpose, :payment_method, :txn_id, :message, 'Pending')
+            VALUES (:name, :email, :phone, :amount, :purpose, :payment_method, :txn_id, :message, 'Completed')
         ");
         $stmt->execute([
             ':name'           => $old['donor_name'],

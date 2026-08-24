@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'unit'        => sanitize($_POST['unit']        ?? ''),
         'stock_qty'   => (int)($_POST['stock_qty']      ?? 0),
         'description' => sanitize($_POST['description'] ?? ''),
+        'whatsapp_message' => sanitize($_POST['whatsapp_message'] ?? ''),
         'is_featured' => isset($_POST['is_featured']) ? 1 : 0,
         'is_active'   => isset($_POST['is_active'])   ? 1 : 0,
     ];
@@ -45,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $pdo = getDBConnection();
         $pdo->prepare("
-            INSERT INTO products (name, category, price, unit, stock_qty, description, image, is_featured, is_active)
-            VALUES (:name, :cat, :price, :unit, :stock, :desc, :image, :featured, :active)
+            INSERT INTO products (name, category, price, unit, stock_qty, description, image, whatsapp_message, is_featured, is_active)
+            VALUES (:name, :cat, :price, :unit, :stock, :desc, :image, :whatsapp_message, :featured, :active)
         ")->execute([
             ':name'    => $old['name'],
             ':cat'     => $old['category'],
@@ -55,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':stock'   => $old['stock_qty'],
             ':desc'    => $old['description'],
             ':image'   => $imgFilename,
+            ':whatsapp_message' => $old['whatsapp_message'] ?: null,
             ':featured'=> $old['is_featured'],
             ':active'  => $old['is_active'],
         ]);
@@ -104,6 +106,11 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
       <div class="col-12">
         <label class="form-label">Description</label>
         <textarea name="description" class="form-control" rows="4"><?= e($old['description'] ?? '') ?></textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">WhatsApp Custom Message (Optional)</label>
+        <textarea name="whatsapp_message" class="form-control" rows="2" placeholder="e.g. Hello, I want to order this product..."><?= e($old['whatsapp_message'] ?? '') ?></textarea>
+        <div class="form-text">If left blank, the global message from settings will be used.</div>
       </div>
       <div class="col-md-6">
         <label class="form-label">Product Image</label>

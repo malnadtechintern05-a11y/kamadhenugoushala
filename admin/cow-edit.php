@@ -35,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'health_status'   => sanitize($_POST['health_status']    ?? 'Healthy'),
         'adoption_status' => sanitize($_POST['adoption_status']  ?? 'Available'),
         'description'     => sanitize($_POST['description']      ?? ''),
+        'whatsapp_number' => sanitize($_POST['whatsapp_number']  ?? ''),
+        'whatsapp_message'=> sanitize($_POST['whatsapp_message'] ?? ''),
         'is_featured'     => isset($_POST['is_featured']) ? 1 : 0,
         'image'           => $cow['image'], // keep existing
     ];
@@ -59,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("
             UPDATE cows SET name=:name, breed=:breed, age=:age, gender=:gender, color=:color,
             weight_kg=:weight_kg, health_status=:health, adoption_status=:adoption, description=:desc,
-            image=:image, is_featured=:featured
+            whatsapp_number=:whatsapp_number, whatsapp_message=:whatsapp_message, image=:image, is_featured=:featured
             WHERE id=:id
         ");
         $stmt->execute([
@@ -72,9 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':health'   => $old['health_status'],
             ':adoption' => $old['adoption_status'],
             ':desc'     => $old['description'],
+            ':whatsapp_number'  => $old['whatsapp_number'] !== '' ? $old['whatsapp_number'] : null,
+            ':whatsapp_message' => $old['whatsapp_message'] !== '' ? $old['whatsapp_message'] : null,
             ':image'    => $old['image'],
             ':featured' => $old['is_featured'],
-            ':id'       => $id,
+            ':id'       => $id
         ]);
         set_flash('success', 'Cow "' . $old['name'] . '" updated successfully.');
         redirect(BASE_URL . '/admin/cows.php');
@@ -152,10 +156,21 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
           <label class="form-check-label fw-600" for="is_featured" style="color:var(--kg-green-dark);">Featured</label>
         </div>
       </div>
-      <div class="col-12">
-        <label class="form-label">Description</label>
-        <textarea name="description" class="form-control" rows="4"><?= e($old['description']) ?></textarea>
-      </div>
+          <div class="col-md-6">
+            <label for="whatsapp_number" class="form-label">Custom WhatsApp Number</label>
+            <input type="text" id="whatsapp_number" name="whatsapp_number" class="form-control" value="<?= e($old['whatsapp_number'] ?? '') ?>" placeholder="e.g. 919876543210">
+            <div class="form-text">Leave blank to use the global site default.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="whatsapp_message" class="form-label">Custom WhatsApp Message</label>
+            <input type="text" id="whatsapp_message" name="whatsapp_message" class="form-control" value="<?= e($old['whatsapp_message'] ?? '') ?>" placeholder="Hello, I want to adopt...">
+            <div class="form-text">Leave blank to auto-generate based on cow name and breed.</div>
+          </div>
+
+          <div class="col-12 mt-4">
+            <label for="description" class="form-label">Description / History</label>
+            <textarea id="description" name="description" class="form-control" rows="4"><?= e($old['description'] ?? '') ?></textarea>
+          </div>
       <div class="col-md-6">
         <label class="form-label">Current Image</label>
         <div>

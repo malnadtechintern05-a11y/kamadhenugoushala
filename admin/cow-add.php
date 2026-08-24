@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'health_status'    => sanitize($_POST['health_status']    ?? 'Healthy'),
         'adoption_status'  => sanitize($_POST['adoption_status']  ?? 'Available'),
         'description'      => sanitize($_POST['description']      ?? ''),
+        'whatsapp_number'  => sanitize($_POST['whatsapp_number']  ?? ''),
+        'whatsapp_message' => sanitize($_POST['whatsapp_message'] ?? ''),
         'is_featured'      => isset($_POST['is_featured']) ? 1 : 0,
     ];
 
@@ -50,8 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $pdo  = getDBConnection();
         $stmt = $pdo->prepare("
-            INSERT INTO cows (name, breed, age, gender, color, weight_kg, health_status, adoption_status, description, image, is_featured)
-            VALUES (:name, :breed, :age, :gender, :color, :weight_kg, :health, :adoption, :desc, :image, :featured)
+            INSERT INTO cows (name, breed, age, gender, color, weight_kg, health_status, adoption_status, description, whatsapp_number, whatsapp_message, image, is_featured)
+            VALUES (:name, :breed, :age, :gender, :color, :weight_kg, :health, :adoption, :desc, :whatsapp_number, :whatsapp_message, :image, :featured)
         ");
         $stmt->execute([
             ':name'     => $old['name'],
@@ -63,8 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':health'   => $old['health_status'],
             ':adoption' => $old['adoption_status'],
             ':desc'     => $old['description'],
+            ':whatsapp_number'  => $old['whatsapp_number'] ?: null,
+            ':whatsapp_message' => $old['whatsapp_message'] ?: null,
             ':image'    => $imageFilename,
-            ':featured' => $old['is_featured'],
+            ':featured' => $old['is_featured']
         ]);
         set_flash('success', 'Cow "' . $old['name'] . '" added successfully.');
         redirect(BASE_URL . '/admin/cows.php');
@@ -143,10 +147,21 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
           <label class="form-check-label fw-600" for="is_featured" style="color:var(--kg-green-dark);">Featured on Homepage</label>
         </div>
       </div>
-      <div class="col-12">
-        <label class="form-label">Description</label>
-        <textarea name="description" class="form-control" rows="4" placeholder="Tell the story of this cow…"><?= e($old['description'] ?? '') ?></textarea>
-      </div>
+          <div class="col-md-6">
+            <label for="whatsapp_number" class="form-label">Custom WhatsApp Number</label>
+            <input type="text" id="whatsapp_number" name="whatsapp_number" class="form-control" value="<?= e($old['whatsapp_number'] ?? '') ?>" placeholder="e.g. 919876543210">
+            <div class="form-text">Leave blank to use the global site default.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="whatsapp_message" class="form-label">Custom WhatsApp Message</label>
+            <input type="text" id="whatsapp_message" name="whatsapp_message" class="form-control" value="<?= e($old['whatsapp_message'] ?? '') ?>" placeholder="Hello, I want to adopt...">
+            <div class="form-text">Leave blank to auto-generate based on cow name and breed.</div>
+          </div>
+          
+          <div class="col-12 mt-4">
+            <label for="description" class="form-label">Description / History</label>
+            <textarea id="description" name="description" class="form-control" rows="4"><?= e($old['description'] ?? '') ?></textarea>
+          </div>
       <div class="col-md-6">
         <label class="form-label">Cow Image (JPG/PNG/WebP, max 5MB)</label>
         <input type="file" name="image" id="cowImage" class="form-control" accept="image/*" data-preview="cowPreview">

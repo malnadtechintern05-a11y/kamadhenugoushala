@@ -51,11 +51,17 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
           <td style="font-size:.82rem;max-width:250px;word-break:break-word;"><?= e(mb_strimwidth($m['message'], 0, 80, '…')) ?></td>
           <td style="font-size:.75rem;color:#888;white-space:nowrap;"><?= format_datetime($m['created_at']) ?></td>
           <td>
+            <a href="<?= BASE_URL ?>/admin/message-view.php?id=<?= (int)$m['id'] ?>" class="btn btn-sm btn-outline-secondary" style="border-radius:6px;" title="View Message">
+              <i class="bi bi-eye"></i>
+            </a>
             <?php if (!$m['is_read']): ?>
             <a href="<?= BASE_URL ?>/admin/messages.php?read=<?= (int)$m['id'] ?>" class="btn btn-sm" style="background:#d1fae5;color:#065f46;border-radius:6px;" title="Mark as Read">
               <i class="bi bi-check2"></i>
             </a>
             <?php endif; ?>
+            <a href="<?= BASE_URL ?>/admin/message-delete.php?id=<?= (int)$m['id'] ?>" class="btn btn-sm btn-outline-danger" style="border-radius:6px;" title="Delete Message" onclick="return confirm('Are you sure you want to delete this message?');">
+              <i class="bi bi-trash"></i>
+            </a>
           </td>
         </tr>
         <?php endforeach; ?>

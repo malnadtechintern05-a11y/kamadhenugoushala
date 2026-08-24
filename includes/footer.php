@@ -97,7 +97,7 @@
 </footer>
 
 <!-- Cart Offcanvas -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel" data-bs-focus="false" data-bs-scroll="true">
   <div class="offcanvas-header border-bottom">
     <h5 class="offcanvas-title" id="cartOffcanvasLabel">
       <i class="bi bi-cart3 me-2"></i>Your Cart
@@ -152,7 +152,7 @@ function addToCart(productId, quantity = 1) {
         if(data.success) {
             updateCartBadge(data.count);
             // open offcanvas
-            var bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('cartOffcanvas'));
+            var bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('cartOffcanvas'));
             bsOffcanvas.show();
         } else {
             alert(data.message || 'Error adding to cart');

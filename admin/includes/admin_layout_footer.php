@@ -18,6 +18,33 @@ window.addEventListener('load', function() {
     }, 400);
   }
 });
+
+// Theme Toggle Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const htmlEl = document.documentElement;
+
+    // Update icon on initial load
+    if (htmlEl.getAttribute('data-bs-theme') === 'dark') {
+        themeIcon.classList.replace('bi-moon-stars', 'bi-sun');
+    }
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = htmlEl.getAttribute('data-bs-theme');
+            if (currentTheme === 'dark') {
+                htmlEl.removeAttribute('data-bs-theme');
+                localStorage.removeItem('theme');
+                themeIcon.classList.replace('bi-sun', 'bi-moon-stars');
+            } else {
+                htmlEl.setAttribute('data-bs-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.replace('bi-moon-stars', 'bi-sun');
+            }
+        });
+    }
+});
 </script>
 </body>
 </html>

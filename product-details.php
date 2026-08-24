@@ -86,15 +86,38 @@ require_once __DIR__ . '/includes/navbar.php';
                      min="1" max="<?= (int)$product['stock_qty'] ?>"
                      value="1">
             </div>
+            <?php if (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'both'): ?>
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <button type="button" class="btn btn-kg-primary py-3 px-4 flex-grow-1" style="max-width: 250px;" onclick="addDetailToCart(<?= (int)$product['id'] ?>)">
+              <i class="bi bi-cart-plus me-2"></i>Add to Cart
+            </button>
+            <a href="<?= BASE_URL ?>/whatsapp_product_redirect.php?product_id=<?= (int)$product['id'] ?>" target="_blank" class="btn btn-whatsapp py-3 px-4 flex-grow-1" style="max-width: 250px;">
+              <i class="bi bi-whatsapp me-2"></i>Buy via WhatsApp
+            </a>
+          </div>
+          <?php elseif (defined('CHECKOUT_MODE_PRODUCTS') && CHECKOUT_MODE_PRODUCTS === 'whatsapp'): ?>
+          <div class="mt-4">
+            <a href="<?= BASE_URL ?>/whatsapp_product_redirect.php?product_id=<?= (int)$product['id'] ?>" target="_blank" class="btn btn-whatsapp py-3 px-4" style="max-width: 250px;">
+              <i class="bi bi-whatsapp me-2"></i>Buy via WhatsApp
+            </a>
+          </div>
+          <?php else: ?>
+          <div class="mt-4">
             <button type="button" class="btn btn-kg-primary py-3 px-4" style="max-width: 250px;" onclick="addDetailToCart(<?= (int)$product['id'] ?>)">
               <i class="bi bi-cart-plus me-2"></i>Add to Cart
             </button>
+          </div>
+          <?php endif; ?>
           </div>
 
           <script>
           function addDetailToCart(productId) {
               const qty = document.getElementById('detail-quantity').value;
               addToCart(productId, parseInt(qty));
+          }
+          function buyOnWhatsApp(productId) {
+              const qty = document.getElementById('detail-quantity').value;
+              window.open(`<?= BASE_URL ?>/whatsapp_product_redirect.php?product_id=${productId}&qty=${qty}`, '_blank');
           }
           </script>
           <?php endif; ?>

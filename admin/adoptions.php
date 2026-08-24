@@ -44,11 +44,11 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
   <div class="table-responsive">
     <table class="table align-middle">
       <thead>
-        <tr><th>Adopter</th><th>Cow</th><th>Duration</th><th>Monthly ₹</th><th>Status</th><th>Applied On</th></tr>
+        <tr><th>Adopter</th><th>Cow</th><th>Duration</th><th>Monthly ₹</th><th>Status</th><th>Applied On</th><th>Actions</th></tr>
       </thead>
       <tbody>
         <?php if (empty($pagData['items'])): ?>
-        <tr><td colspan="6" class="text-center py-4 text-muted">No adoptions found.</td></tr>
+        <tr><td colspan="7" class="text-center py-4 text-muted">No adoptions found.</td></tr>
         <?php else: ?>
         <?php foreach ($pagData['items'] as $a): ?>
         <tr>
@@ -68,6 +68,9 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
             <span class="<?= $sc ?>"><?= e($a['status']) ?></span>
           </td>
           <td style="font-size:.78rem;color:#888;"><?= format_date($a['created_at']) ?></td>
+          <td>
+            <a href="adoption-view.php?id=<?= $a['id'] ?>" class="btn btn-sm btn-kg-outline py-0 px-2">View</a>
+          </td>
         </tr>
         <?php endforeach; ?>
         <?php endif; ?>

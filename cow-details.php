@@ -133,9 +133,15 @@ require_once __DIR__ . '/includes/navbar.php';
         <!-- CTA Buttons -->
         <div class="d-flex flex-wrap gap-3">
           <?php if ($cow['adoption_status'] === 'Available'): ?>
-          <a href="<?= BASE_URL ?>/adopt.php?cow_id=<?= (int)$cow['id'] ?>" class="btn btn-kg-gold">
-            <i class="bi bi-heart-fill me-2"></i>Adopt <?= e($cow['name']) ?>
+          <?php if (defined('CHECKOUT_MODE_COWS') && CHECKOUT_MODE_COWS === 'whatsapp'): ?>
+          <a href="<?= BASE_URL ?>/whatsapp_redirect.php?cow_id=<?= (int)$cow['id'] ?>" target="_blank" class="btn btn-kg-gold">
+            Adopt <?= e($cow['name']) ?>
           </a>
+          <?php else: ?>
+          <a href="<?= BASE_URL ?>/adopt.php?cow_id=<?= (int)$cow['id'] ?>" class="btn btn-kg-gold">
+            Adopt <?= e($cow['name']) ?>
+          </a>
+          <?php endif; ?>
           <?php endif; ?>
           <a href="<?= BASE_URL ?>/donate.php" class="btn btn-kg-primary">
             <i class="bi bi-currency-rupee me-2"></i>Donate for Her Care
