@@ -265,6 +265,57 @@ html { scroll-behavior: smooth; }
   </div>
 </section>
 
+<!-- ═══════════════════════ OUR COWS ══════════════════ -->
+<?php if (!empty($featuredCows)): ?>
+<section class="kg-section kg-anim-section" id="cows-section" style="background-color: var(--kg-white);">
+  <div class="container">
+    <div class="kg-section-header">
+      <div class="kg-section-label">Meet Our Family</div>
+      <h2 class="kg-section-title">Our Sacred Cows</h2>
+      <div class="kg-divider"></div>
+      <p class="kg-section-desc mt-3">Get to know the divine residents of our sanctuary. You can symbolically adopt a cow to support her daily needs.</p>
+    </div>
+    
+    <div class="row g-4">
+      <?php foreach ($featuredCows as $cow): ?>
+      <div class="col-md-6 col-lg-4">
+        <div class="kg-cow-card h-100 shadow-sm" style="border-radius: var(--kg-radius); overflow: hidden; background-color: var(--kg-white); border: 1px solid var(--kg-border);">
+          <div class="position-relative">
+            <img src="<?= img_url('cows', $cow['image']) ?>"
+                 alt="<?= e($cow['name']) ?>"
+                 loading="lazy"
+                 class="w-100"
+                 style="height: 250px; object-fit: cover;"
+                 onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder.jpg'">
+            <?php if ($cow['adoption_status'] === 'Available'): ?>
+            <span class="badge bg-success position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill">Available for Adoption</span>
+            <?php else: ?>
+            <span class="badge bg-secondary position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill">Adopted</span>
+            <?php endif; ?>
+          </div>
+          <div class="p-4 text-center">
+            <h4 class="mb-1" style="color: var(--kg-green-dark); font-family: 'Noto Serif', serif; font-weight: 700;"><?= e($cow['name']) ?></h4>
+            <div class="mb-3 text-muted" style="font-size: 0.9rem;">
+              Breed: <?= e($cow['breed']) ?> &bull; Age: <?= e($cow['age']) ?> yrs
+            </div>
+            <a href="<?= BASE_URL ?>/cow-details.php?id=<?= (int)$cow['id'] ?>" class="btn btn-outline-success rounded-pill px-4">
+              Meet <?= e($cow['name']) ?>
+            </a>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
+    </div>
+    
+    <div class="text-center mt-5">
+      <a href="<?= BASE_URL ?>/cows.php" class="btn-kg-outline btn">
+        <i class="bi bi-suit-heart me-2"></i>View All Cows
+      </a>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
 <!-- ═══════════════════════ VIDEO TOUR ══════════════════════ -->
 <section class="kg-section kg-section-alt kg-anim-section" id="video-section">
   <div class="container">
