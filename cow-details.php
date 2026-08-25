@@ -143,10 +143,16 @@ require_once __DIR__ . '/includes/navbar.php';
           </a>
           <?php endif; ?>
           <?php endif; ?>
-          <a href="<?= BASE_URL ?>/donate.php" class="btn btn-kg-primary">
-            <i class="bi bi-currency-rupee me-2"></i>Donate for Her Care
+          
+          <a href="<?= BASE_URL ?>/donate.php?purpose=feed&cow=<?= urlencode($cow['name']) ?>" target="_blank" class="btn btn-kg-primary">
+            <i class="bi bi-basket-fill me-2"></i>Feed <?= e($cow['name']) ?>
           </a>
-          <a href="<?= BASE_URL ?>/cows.php" class="btn btn-kg-outline">
+          
+          <a href="<?= BASE_URL ?>/donate.php?cow=<?= urlencode($cow['name']) ?>" target="_blank" class="btn btn-kg-outline">
+            <i class="bi bi-heart-pulse me-2"></i>Medical Care
+          </a>
+          
+          <a href="<?= BASE_URL ?>/cows.php" class="btn text-muted" style="text-decoration: none; display: flex; align-items: center;">
             <i class="bi bi-arrow-left me-2"></i>Back to All Cows
           </a>
         </div>

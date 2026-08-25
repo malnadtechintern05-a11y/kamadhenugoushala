@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->query("UPDATE videos SET is_featured = 1");
         }
 
-        flash_set('Video added successfully!', 'success');
+        set_flash('success', 'Video added successfully!');
         redirect(BASE_URL . '/admin/videos.php');
     }
 }

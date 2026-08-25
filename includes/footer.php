@@ -43,7 +43,7 @@
         <div class="col-lg-2 col-md-6">
           <h6 class="kg-footer-heading">Get Involved</h6>
           <ul class="kg-footer-links">
-            <li><a href="<?= BASE_URL ?>/donate.php">Donate</a></li>
+            <li><a href="<?= BASE_URL ?>/donate.php" target="_blank">Donate</a></li>
             <li><a href="<?= BASE_URL ?>/adopt.php">Adopt a Cow</a></li>
             <li><a href="<?= BASE_URL ?>/volunteer.php">Volunteer</a></li>
             <li><a href="<?= BASE_URL ?>/products.php">Products</a></li>

@@ -20,7 +20,7 @@ $pageDesc  = $pageDesc  ?? 'Kamadhenu Goushala — A sacred sanctuary dedicated 
   <title><?= e($pageTitle) ?> | <?= e(SITE_NAME) ?></title>
 
   <!-- Favicon -->
-  <link rel="icon" href="<?= BASE_URL ?>/assets/images/favicon.svg?v=3" type="image/svg+xml">
+  <link rel="icon" href="<?= get_site_favicon_url() ?>" type="<?= get_site_favicon_type() ?>">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +40,7 @@ $pageDesc  = $pageDesc  ?? 'Kamadhenu Goushala — A sacred sanctuary dedicated 
 <div id="kg-preloader" class="kg-preloader">
   <div class="kg-preloader-content">
     <div class="kg-preloader-logo-wrap">
-      <img src="<?= BASE_URL ?>/assets/images/favicon.svg" alt="Loading" class="kg-preloader-logo">
+      <img src="<?= get_site_favicon_url() ?>" alt="Loading" class="kg-preloader-logo">
       <div class="kg-preloader-ring"></div>
     </div>
     <div class="kg-preloader-text">

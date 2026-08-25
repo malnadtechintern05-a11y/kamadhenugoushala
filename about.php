@@ -185,7 +185,7 @@ require_once __DIR__ . '/includes/navbar.php';
     <p style="color:rgba(255,255,255,.8);max-width:500px;margin:0 auto 2rem;">
       Whether you adopt, donate, volunteer or simply spread the word — your support keeps this sanctuary alive.
     </p>
-    <a href="<?= BASE_URL ?>/donate.php" class="btn-kg-gold btn btn-lg me-3">
+    <a href="<?= BASE_URL ?>/donate.php" target="_blank" class="btn-kg-gold btn btn-lg me-3">
       <i class="bi bi-heart-fill me-2"></i>Donate Now
     </a>
     <a href="<?= BASE_URL ?>/contact.php" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);border-radius:50px;padding:.7rem 2rem;">

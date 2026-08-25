@@ -23,9 +23,9 @@ if ($id > 0 && hash_equals(csrf_token(), $token)) {
     $stmt = $pdo->prepare("UPDATE videos SET is_featured = 1 WHERE id = :id");
     $stmt->execute([':id' => $id]);
     
-    flash_set('Homepage video updated successfully.', 'success');
+    set_flash('success', 'Homepage video updated successfully.');
 } else {
-    flash_set('Invalid request.', 'danger');
+    set_flash('danger', 'Invalid request.');
 }
 
 redirect(BASE_URL . '/admin/videos.php');

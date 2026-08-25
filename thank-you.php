@@ -79,7 +79,7 @@ require_once __DIR__ . '/includes/navbar.php';
         <a href="<?= BASE_URL ?>/" class="btn btn-kg-primary">
           <i class="bi bi-house me-2"></i>Back to Home
         </a>
-        <a href="<?= BASE_URL ?>/donate.php" class="btn btn-kg-outline">
+        <a href="<?= BASE_URL ?>/donate.php" target="_blank" class="btn btn-kg-outline">
           <i class="bi bi-heart me-2"></i>Donate Again
         </a>
         <a href="<?= BASE_URL ?>/cows.php" class="btn btn-kg-outline">

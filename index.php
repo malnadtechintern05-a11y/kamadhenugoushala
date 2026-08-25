@@ -67,7 +67,7 @@ require_once __DIR__ . '/includes/navbar.php';
         </p>
         <div class="kg-hero-actions">
 
-          <a href="<?= BASE_URL ?>/donate.php" class="btn-kg-outline btn" style="border-color:rgba(255,255,255,.6);color:#fff;">
+          <a href="<?= BASE_URL ?>/donate.php" target="_blank" class="btn-kg-outline btn" style="border-color:rgba(255,255,255,.6);color:#fff;">
             <i class="bi bi-gift me-2"></i>Donate Now
           </a>
         </div>
@@ -332,16 +332,36 @@ html { scroll-behavior: smooth; }
 
       <?php foreach($featuredVideos as $vid): ?>
       <div class="col-md-6 mb-4">
-        <div class="kg-video-wrapper shadow-lg" style="border-radius:12px; overflow:hidden;">
-          <iframe 
-            src="https://www.youtube.com/embed/<?= e($vid) ?>?rel=0" 
-            title="Kamadhenu Goushala Video Tour" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-          </iframe>
+        <div class="kg-video-frame position-relative shadow-lg" style="border-radius: 20px; overflow: hidden; border: 8px solid #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;">
+          <!-- Aspect ratio wrapper -->
+          <div class="ratio ratio-16x9 bg-dark" id="vid-wrapper-<?= e($vid) ?>">
+            <!-- iframe will be injected here by JS -->
+          </div>
+          
+          <!-- Thumbnail Overlay -->
+          <div class="kg-video-overlay" id="vid-overlay-<?= e($vid) ?>" onclick="playVideo('<?= e($vid) ?>')" style="cursor:pointer; position:absolute; top:0; left:0; width:100%; height:100%; z-index:2; overflow:hidden;">
+            <img src="https://img.youtube.com/vi/<?= e($vid) ?>/maxresdefault.jpg" alt="Video Thumbnail" class="w-100 h-100" style="object-fit:cover; transition:transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);" onmouseover="this.style.transform='scale(1.08)'; this.nextElementSibling.nextElementSibling.firstElementChild.style.transform='scale(1.15)'; this.nextElementSibling.nextElementSibling.firstElementChild.style.background='#fff'" onmouseout="this.style.transform='scale(1)'; this.nextElementSibling.nextElementSibling.firstElementChild.style.transform='scale(1)'; this.nextElementSibling.nextElementSibling.firstElementChild.style.background='rgba(255,255,255,0.95)'">
+            
+            <!-- Subtle dark overlay -->
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.25); pointer-events:none;"></div>
+            
+            <!-- Play Button -->
+            <div class="kg-play-btn-wrapper" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); pointer-events:none;">
+              <div class="kg-play-btn" style="width: 85px; height: 85px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);">
+                <i class="bi bi-play-fill" style="font-size: 3.5rem; color: var(--kg-green-dark); margin-left: 8px;"></i>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <?php endforeach; ?>
+
+      <script>
+      function playVideo(vid) {
+        document.getElementById('vid-overlay-' + vid).style.display = 'none';
+        document.getElementById('vid-wrapper-' + vid).innerHTML = '<iframe src="https://www.youtube.com/embed/' + vid + '?autoplay=1&rel=0" title="Kamadhenu Goushala Video Tour" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%; border:0;"></iframe>';
+      }
+      </script>
 
       <div class="col-12 text-center mt-4">
         <a href="<?= BASE_URL ?>/gallery.php" class="btn-kg-outline btn">
@@ -370,7 +390,7 @@ html { scroll-behavior: smooth; }
           <h4>Feed a Cow</h4>
           <div class="kg-seva-amount">₹500/day</div>
           <p style="color:var(--kg-text-muted);font-size:.88rem;">Donate a day's feed for our cows. Includes green fodder, dry fodder, and mineral supplements.</p>
-          <a href="<?= BASE_URL ?>/donate.php" class="btn btn-sm btn-kg-primary mt-auto">Donate Feed</a>
+          <a href="<?= BASE_URL ?>/donate.php" target="_blank" class="btn btn-sm btn-kg-primary mt-auto">Donate Feed</a>
         </div>
       </div>
       <div class="col-md-4">
@@ -379,7 +399,7 @@ html { scroll-behavior: smooth; }
           <h4>Medical Seva</h4>
           <div class="kg-seva-amount">₹2,000+</div>
           <p style="color:var(--kg-text-muted);font-size:.88rem;">Help pay for veterinary care, medicines, and surgeries for injured or sick cows in our care.</p>
-          <a href="<?= BASE_URL ?>/donate.php" class="btn btn-sm btn-kg-primary mt-auto">Support Health</a>
+          <a href="<?= BASE_URL ?>/donate.php" target="_blank" class="btn btn-sm btn-kg-primary mt-auto">Support Health</a>
         </div>
       </div>
       <div class="col-md-4">
@@ -496,7 +516,7 @@ html { scroll-behavior: smooth; }
     <p style="color:rgba(255,255,255,.8);max-width:550px;margin:0 auto 2rem;">
       Every rupee you donate goes directly towards feeding our cows, their medical care, and maintaining this sacred space.
     </p>
-    <a href="<?= BASE_URL ?>/donate.php" class="btn-kg-gold btn btn-lg">
+    <a href="<?= BASE_URL ?>/donate.php" target="_blank" class="btn-kg-gold btn btn-lg">
       <i class="bi bi-heart-fill me-2"></i>Donate Now
     </a>
     &nbsp;&nbsp;

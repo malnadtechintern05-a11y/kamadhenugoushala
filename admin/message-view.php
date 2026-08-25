@@ -52,27 +52,27 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
   <table class="table table-bordered align-middle">
     <tbody>
       <tr>
-        <th style="width:150px; background:#f8f9fa;">From Name</th>
+        <th class="bg-body-tertiary" style="width:150px;">From Name</th>
         <td><?= e($msg['name']) ?></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Email Address</th>
+        <th class="bg-body-tertiary">Email Address</th>
         <td><a href="mailto:<?= e($msg['email']) ?>"><?= e($msg['email']) ?></a></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Phone Number</th>
+        <th class="bg-body-tertiary">Phone Number</th>
         <td><?= $msg['phone'] ? e($msg['phone']) : '<em class="text-muted">Not provided</em>' ?></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Subject</th>
-        <td><?= e($msg['subject'] ?: '(No Subject)') ?></td>
+        <th class="bg-body-tertiary">Subject</th>
+        <td><strong><?= e($msg['subject'] ?? 'No Subject') ?></strong></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Date Received</th>
+        <th class="bg-body-tertiary">Date Received</th>
         <td><?= format_datetime($msg['created_at']) ?></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Status</th>
+        <th class="bg-body-tertiary">Status</th>
         <td>
           <?php if ($msg['is_read']): ?>
             <span class="badge bg-success">Read</span>
@@ -85,7 +85,7 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
   </table>
 
   <h5 class="mt-4 mb-3" style="color:var(--kg-green-dark);">Message Content</h5>
-  <div class="p-4 rounded" style="background:#f9f9f9; border: 1px solid #e5e7eb; white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;"><?= e($msg['message']) ?></div>
+  <div class="p-4 rounded bg-body-tertiary border" style="white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;"><?= e($msg['message']) ?></div>
   
   <div class="mt-4 d-flex gap-2">
     <a href="mailto:<?= e($msg['email']) ?>" class="btn btn-primary">

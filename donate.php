@@ -1,231 +1,154 @@
 <?php
 /**
- * Donate Page — Kamadhenu Goushala
+ * Donate via WhatsApp — Kamadhenu Goushala
  */
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/functions.php';
-require_once __DIR__ . '/includes/csrf.php';
 
-$errors  = [];
-$old     = [];
+$pageTitle = 'Donate via WhatsApp - Kamadhenu Goushala';
+$activePage = 'donate';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    csrf_validate();
-
-    $old = [
-        'donor_name'     => sanitize($_POST['donor_name']     ?? ''),
-        'donor_email'    => sanitize($_POST['donor_email']    ?? ''),
-        'donor_phone'    => sanitize($_POST['donor_phone']    ?? ''),
-        'amount'         => sanitize($_POST['amount']         ?? ''),
-        'purpose'        => sanitize($_POST['purpose']        ?? 'General'),
-        'payment_method' => sanitize($_POST['payment_method'] ?? 'UPI'),
-        'transaction_id' => sanitize($_POST['transaction_id'] ?? ''),
-        'message'        => sanitize($_POST['message']        ?? ''),
-    ];
-
-    $validPurposes = ['General','Cow Feed','Medical','Infrastructure','Gau Seva','Other'];
-    $validPayments = ['UPI','Bank Transfer','Cash','Online','Other'];
-
-    if (empty($old['donor_name']))  $errors[] = 'Your name is required.';
-    if (empty($old['donor_email']) || !is_valid_email($old['donor_email'])) $errors[] = 'A valid email address is required.';
-    if (!is_valid_amount($old['amount'])) $errors[] = 'Please enter a valid donation amount (positive number).';
-    if (!in_array($old['purpose'], $validPurposes, true)) $errors[] = 'Invalid donation purpose.';
-    if (!in_array($old['payment_method'], $validPayments, true)) $errors[] = 'Invalid payment method.';
-
-    if (empty($errors)) {
-        $pdo = getDBConnection();
-        $stmt = $pdo->prepare("
-            INSERT INTO donations (donor_name, donor_email, donor_phone, amount, purpose, payment_method, transaction_id, message, status)
-            VALUES (:name, :email, :phone, :amount, :purpose, :payment_method, :txn_id, :message, 'Completed')
-        ");
-        $stmt->execute([
-            ':name'           => $old['donor_name'],
-            ':email'          => $old['donor_email'],
-            ':phone'          => $old['donor_phone'],
-            ':amount'         => (float)$old['amount'],
-            ':purpose'        => $old['purpose'],
-            ':payment_method' => $old['payment_method'],
-            ':txn_id'         => $old['transaction_id'],
-            ':message'        => $old['message'],
-        ]);
-        redirect(BASE_URL . '/thank-you.php?type=donation');
-    }
+// Pre-fill from URL
+$defaultPurpose = isset($_GET['purpose']) ? $_GET['purpose'] : 'General';
+if ($defaultPurpose === 'feed') $defaultPurpose = 'Cow Feed';
+$defaultCow = isset($_GET['cow']) ? strip_tags($_GET['cow']) : '';
+if ($defaultCow && $defaultPurpose === 'General') {
+    $defaultPurpose = 'Medical Care';
 }
 
-$pageTitle  = 'Donate';
-$activePage = 'donate';
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 ?>
 
-<section class="kg-page-banner">
+<section class="py-5" style="background: var(--kg-bg-color); min-height: calc(100vh - 200px);">
   <div class="container">
-    <h1><i class="bi bi-currency-rupee me-2"></i>Donate to Gau Seva</h1>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="<?= BASE_URL ?>/">Home</a></li>
-        <li class="breadcrumb-item active">Donate</li>
-      </ol>
-    </nav>
-  </div>
-</section>
-
-<section class="kg-section">
-  <div class="container">
-    <div class="row g-5">
-      <!-- Info Column -->
-      <div class="col-lg-5">
-        <div class="kg-section-label">Your Contribution Matters</div>
-        <h2 class="kg-section-title">Every Rupee Makes a Difference</h2>
-        <div class="kg-divider mb-4"></div>
-        <p style="color:var(--kg-text-muted);">
-          100% of your donation goes directly towards the care of our sacred cows. 
-          We maintain full transparency in our use of funds.
-        </p>
-
-        <!-- Impact Cards -->
-        <div class="row g-3 mt-2">
-          <?php
-          $impacts = [
-            ['amount'=>'₹100',   'desc'=>'1 day\'s feed for a calf',       'icon'=>'bag-heart-fill'],
-            ['amount'=>'₹500',   'desc'=>'1 day\'s feed for an adult cow', 'icon'=>'bag-heart-fill'],
-            ['amount'=>'₹2,000', 'desc'=>'Routine veterinary care',        'icon'=>'activity'],
-            ['amount'=>'₹5,000', 'desc'=>'1 month\'s feed for 10 cows',   'icon'=>'people-fill'],
-          ];
-          foreach ($impacts as $imp): ?>
-          <div class="col-6">
-            <div class="p-3 bg-white rounded-3 shadow-sm border text-center h-100" style="border-color:var(--kg-border)!important;">
-              <i class="bi bi-<?= $imp['icon'] ?>" style="color:var(--kg-gold-dark);font-size:1.4rem;"></i>
-              <div class="fw-700 mt-2" style="color:var(--kg-green);font-size:1.1rem;"><?= $imp['amount'] ?></div>
-              <div style="font-size:.78rem;color:var(--kg-text-muted);"><?= $imp['desc'] ?></div>
-            </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card shadow-sm border-0" style="border-radius: 1rem; overflow: hidden;">
+          <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);">
+            <h3 class="mb-1 fw-bold"><i class="bi bi-whatsapp me-2"></i>Donate via WhatsApp</h3>
+            <p class="mb-0 opacity-75 small">Choose your amount to send us a message</p>
           </div>
-          <?php endforeach; ?>
-        </div>
-
-        <!-- Bank Details -->
-        <div class="kg-info-box mt-4">
-          <h6 class="text-kg-green mb-3"><i class="bi bi-bank me-2"></i>Bank Transfer Details</h6>
-          <table class="table table-sm table-borderless mb-0" style="font-size:.85rem;">
-            <tr><td class="fw-600 text-muted">Bank</td><td>State Bank of India</td></tr>
-            <tr><td class="fw-600 text-muted">Account</td><td>00000012345678</td></tr>
-            <tr><td class="fw-600 text-muted">IFSC</td><td>SBIN0001234</td></tr>
-            <tr><td class="fw-600 text-muted">Account Name</td><td>Kamadhenu Goushala Trust</td></tr>
-            <tr><td class="fw-600 text-muted">UPI ID</td><td>kamadhenu@sbi</td></tr>
-          </table>
-        </div>
-
-        <div class="mt-3" style="font-size:.83rem;color:var(--kg-text-muted);">
-          <i class="bi bi-shield-check me-1 text-kg-green"></i>
-          Donations eligible for 80G tax exemption under Income Tax Act.
-        </div>
-      </div>
-
-      <!-- Donation Form -->
-      <div class="col-lg-7">
-        <div class="kg-form-card">
-          <h4 class="mb-4 text-kg-green"><i class="bi bi-heart-fill me-2"></i>Make a Donation</h4>
-
-          <?php if (!empty($errors)): ?>
-          <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <strong>Please fix:</strong>
-            <ul class="mb-0 mt-2">
-              <?php foreach ($errors as $err): ?><li><?= e($err) ?></li><?php endforeach; ?>
-            </ul>
-          </div>
-          <?php endif; ?>
-
-          <form method="POST" action="" data-validate novalidate>
-            <?= csrf_field() ?>
-
-            <!-- Quick Amounts -->
-            <div class="mb-3">
-              <label class="form-label">Quick Select Amount</label>
-              <div class="kg-amount-grid">
-                <?php foreach ([500,1000,2000,5000,10000] as $amt): ?>
-                <button type="button" class="kg-amount-btn" data-amount="<?= $amt ?>">₹<?= number_format($amt) ?></button>
-                <?php endforeach; ?>
+          
+          <div class="card-body p-4 p-md-5">
+            <?php if ($defaultCow): ?>
+            <div class="alert alert-success d-flex align-items-center mb-4">
+              <i class="bi bi-heart-fill me-3 fs-3 text-success"></i>
+              <div>
+                <strong>Supporting <?= e($defaultCow) ?></strong><br>
+                Thank you for choosing to help <?= e($defaultCow) ?>!
               </div>
             </div>
+            <?php endif; ?>
 
-            <div class="mb-3">
-              <label for="donationAmount" class="form-label">Donation Amount (₹) <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text" style="background:var(--kg-green-pale);border-color:var(--kg-border);color:var(--kg-green-dark);font-weight:600;">₹</span>
-                <input type="number" id="donationAmount" name="amount" class="form-control"
-                       placeholder="Enter amount" min="1" step="1"
-                       value="<?= e($old['amount'] ?? '') ?>" required>
-                <div class="invalid-feedback">Please enter a valid amount.</div>
+            <form id="waDonateForm" novalidate>
+              
+              <!-- Quick Amounts -->
+              <div class="mb-4">
+                <label class="form-label fw-bold">Select Amount (₹)</label>
+                <div class="d-flex flex-wrap gap-2 mb-3" id="quickAmounts">
+                  <?php foreach ([500, 1000, 2000, 5000, 10000] as $amt): ?>
+                  <button type="button" class="btn btn-outline-success flex-grow-1 quick-amt-btn" data-amount="<?= $amt ?>">₹<?= number_format($amt) ?></button>
+                  <?php endforeach; ?>
+                </div>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-success fw-bold">₹</span>
+                  <input type="number" id="donationAmount" class="form-control form-control-lg" placeholder="Or enter custom amount" min="1" step="1" required>
+                </div>
               </div>
-            </div>
 
-            <div class="row g-3">
-              <div class="col-md-6 mb-3">
-                <label for="donor_name" class="form-label">Your Full Name <span class="text-danger">*</span></label>
-                <input type="text" id="donor_name" name="donor_name" class="form-control"
-                       placeholder="e.g. Sunita Patel"
-                       value="<?= e($old['donor_name'] ?? '') ?>" required>
-                <div class="invalid-feedback">Name is required.</div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="donor_email" class="form-label">Email <span class="text-danger">*</span></label>
-                <input type="email" id="donor_email" name="donor_email" class="form-control"
-                       placeholder="you@example.com"
-                       value="<?= e($old['donor_email'] ?? '') ?>" required>
-                <div class="invalid-feedback">Valid email required.</div>
-              </div>
-            </div>
-
-            <div class="row g-3">
-              <div class="col-md-6 mb-3">
-                <label for="donor_phone" class="form-label">Phone</label>
-                <input type="tel" id="donor_phone" name="donor_phone" class="form-control"
-                       placeholder="+91 98765 43210"
-                       value="<?= e($old['donor_phone'] ?? '') ?>">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="purpose" class="form-label">Donation Purpose</label>
-                <select name="purpose" id="purpose" class="form-select">
-                  <?php foreach (['General','Cow Feed','Medical','Infrastructure','Gau Seva','Other'] as $p): ?>
-                  <option value="<?= e($p) ?>" <?= ($old['purpose'] ?? 'General') === $p ? 'selected':'' ?>><?= e($p) ?></option>
+              <!-- Purpose -->
+              <div class="mb-4">
+                <label for="purpose" class="form-label fw-bold">Donation Purpose</label>
+                <select id="purpose" class="form-select form-select-lg">
+                  <?php foreach (['General', 'Cow Feed', 'Medical Care', 'Infrastructure', 'Gau Seva'] as $p): ?>
+                  <option value="<?= e($p) ?>" <?= ($defaultPurpose === $p) ? 'selected' : '' ?>><?= e($p) ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
-            </div>
 
-            <div class="row g-3">
-              <div class="col-md-6 mb-3">
-                <label for="payment_method" class="form-label">Payment Method</label>
-                <select name="payment_method" id="payment_method" class="form-select">
-                  <?php foreach (['UPI','Bank Transfer','Cash','Online','Other'] as $pm): ?>
-                  <option value="<?= e($pm) ?>" <?= ($old['payment_method'] ?? 'UPI') === $pm ? 'selected':'' ?>><?= e($pm) ?></option>
-                  <?php endforeach; ?>
-                </select>
+              <!-- Name (Optional) -->
+              <div class="mb-4">
+                <label for="donor_name" class="form-label fw-bold">Your Name (Optional)</label>
+                <input type="text" id="donor_name" class="form-control form-control-lg" placeholder="e.g. Sunita Patel">
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="transaction_id" class="form-label">Transaction ID (optional)</label>
-                <input type="text" id="transaction_id" name="transaction_id" class="form-control"
-                       placeholder="UPI / bank reference"
-                       value="<?= e($old['transaction_id'] ?? '') ?>">
-              </div>
-            </div>
 
-            <div class="mb-4">
-              <label for="message" class="form-label">Message (optional)</label>
-              <textarea name="message" id="message" class="form-control" rows="2"
-                        placeholder="In memory of, in honour of, or any special message…"><?= e($old['message'] ?? '') ?></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-kg-gold w-100 py-3" id="donateSubmitBtn">
-              <i class="bi bi-heart-fill me-2"></i>Donate Now
-            </button>
-          </form>
+              <button type="button" id="waSubmitBtn" class="btn btn-whatsapp w-100 py-3 fs-5 fw-bold" style="border-radius: 50px;">
+                <i class="bi bi-whatsapp me-2"></i> Proceed to WhatsApp
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quickBtns = document.querySelectorAll('.quick-amt-btn');
+    const amtInput = document.getElementById('donationAmount');
+    const waSubmitBtn = document.getElementById('waSubmitBtn');
+    
+    // Quick Amount Buttons Logic
+    quickBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all
+            quickBtns.forEach(b => {
+                b.classList.remove('btn-success', 'text-white');
+                b.classList.add('btn-outline-success');
+            });
+            // Add active class to clicked
+            this.classList.remove('btn-outline-success');
+            this.classList.add('btn-success', 'text-white');
+            
+            // Set input value
+            amtInput.value = this.getAttribute('data-amount');
+        });
+    });
+
+    // Clear active buttons if user types custom amount
+    amtInput.addEventListener('input', function() {
+        quickBtns.forEach(b => {
+            b.classList.remove('btn-success', 'text-white');
+            b.classList.add('btn-outline-success');
+        });
+    });
+
+    // Submit Logic
+    waSubmitBtn.addEventListener('click', function() {
+        const amount = amtInput.value.trim();
+        const purpose = document.getElementById('purpose').value;
+        const name = document.getElementById('donor_name').value.trim() || 'A well-wisher';
+        const cowName = '<?= addslashes($defaultCow) ?>';
+        
+        if (!amount || isNaN(amount) || amount <= 0) {
+            alert('Please select or enter a valid donation amount.');
+            amtInput.focus();
+            return;
+        }
+
+        const phone = '<?= preg_replace('/[^0-9]/', '', SITE_PHONE) ?>';
+        
+        let text = "Hello Kamadhenu Goushala! 🙏\n\n";
+        text += "My name is " + name + ".\n";
+        
+        if (cowName && purpose !== 'General') {
+            text += "I would like to make a donation of ₹" + amount + " towards " + purpose + " for " + cowName + ".\n\n";
+        } else {
+            text += "I would like to make a donation of ₹" + amount + " towards " + purpose + ".\n\n";
+        }
+        
+        text += "Please share the payment details.";
+
+        const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(text);
+        
+        // Since the previous links already have target="_blank", opening in current window is fine, 
+        // but we'll use window.location.href to redirect the popup tab directly to WA.
+        window.location.href = url;
+    });
+});
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -55,14 +55,45 @@ function nav_active(string $page, string $current): string {
         </li>
 
         <!-- Language Switcher -->
+        <?php
+        $currentLangCode = 'en';
+        if (isset($_COOKIE['googtrans'])) {
+            $parts = explode('/', $_COOKIE['googtrans']);
+            if (isset($parts[2]) && in_array($parts[2], ['en', 'hi', 'kn'])) {
+                $currentLangCode = $parts[2];
+            }
+        }
+        $langLabels = [
+            'en' => 'English',
+            'hi' => 'हिंदी',
+            'kn' => 'ಕನ್ನಡ'
+        ];
+        $currentLabel = $langLabels[$currentLangCode] ?? 'English';
+        ?>
         <li class="nav-item dropdown ms-lg-2">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-translate fs-5"></i>
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: var(--kg-green-pale, rgba(45,82,54,0.06)); padding: 0.4rem 1rem; border-radius: 50px;">
+            <i class="bi bi-globe-central-south-asia" style="color: var(--kg-green);"></i>
+            <span class="fw-medium text-dark" style="font-size: 0.9rem;" id="currentLangLabel"><?= $currentLabel ?></span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="languageDropdown">
-            <li><a class="dropdown-item language-select" href="#" data-lang="en">English</a></li>
-            <li><a class="dropdown-item language-select" href="#" data-lang="hi">हिंदी (Hindi)</a></li>
-            <li><a class="dropdown-item language-select" href="#" data-lang="kn">ಕನ್ನಡ (Kannada)</a></li>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="languageDropdown" style="min-width: 180px; padding: 0.5rem; border-top: 3px solid var(--kg-gold) !important;">
+            <li>
+              <a class="dropdown-item language-select rounded-3 d-flex align-items-center justify-content-between mb-1 <?= $currentLangCode === 'en' ? 'active' : '' ?>" href="#" data-lang="en" <?= $currentLangCode === 'en' ? 'style="background-color: var(--kg-green); color: #fff;"' : '' ?>>
+                <span><span class="me-2 fs-5">🇬🇧</span>English</span>
+                <?= $currentLangCode === 'en' ? '<i class="bi bi-check2"></i>' : '' ?>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item language-select rounded-3 d-flex align-items-center justify-content-between mb-1 <?= $currentLangCode === 'hi' ? 'active' : '' ?>" href="#" data-lang="hi" <?= $currentLangCode === 'hi' ? 'style="background-color: var(--kg-green); color: #fff;"' : '' ?>>
+                <span><span class="me-2 fs-5">🇮🇳</span>हिंदी (Hindi)</span>
+                <?= $currentLangCode === 'hi' ? '<i class="bi bi-check2"></i>' : '' ?>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item language-select rounded-3 d-flex align-items-center justify-content-between <?= $currentLangCode === 'kn' ? 'active' : '' ?>" href="#" data-lang="kn" <?= $currentLangCode === 'kn' ? 'style="background-color: var(--kg-green); color: #fff;"' : '' ?>>
+                <span><span class="me-2 fs-5">🇮🇳</span>ಕನ್ನಡ (Kannada)</span>
+                <?= $currentLangCode === 'kn' ? '<i class="bi bi-check2"></i>' : '' ?>
+              </a>
+            </li>
           </ul>
         </li>
         <li class="nav-item ms-lg-2 position-relative">
@@ -73,9 +104,17 @@ function nav_active(string $page, string $current): string {
             </span>
           </a>
         </li>
-        <li class="nav-item ms-lg-2">
-          <a class="btn kg-btn-donate" href="<?= BASE_URL ?>/donate.php">
-            <i class="bi bi-heart-fill me-1"></i> Donate
+        <li class="nav-item ms-lg-2 d-flex align-items-center">
+          <a class="nav-link d-flex align-items-center" href="<?= BASE_URL ?>/supporter-dashboard.php" title="Supporter Account">
+            <i class="bi bi-person-circle fs-5 me-1"></i>
+            <?php if (isset($_SESSION['supporter_name'])): ?>
+              <span class="fw-bold" style="font-size: 0.9rem; margin-top: 2px;"><?= e($_SESSION['supporter_name']) ?></span>
+            <?php endif; ?>
+          </a>
+        </li>
+        <li class="nav-item ms-lg-2 d-flex align-items-center">
+          <a class="btn kg-btn-donate d-flex align-items-center" target="_blank" href="<?= BASE_URL ?>/donate.php">
+            <i class="bi bi-heart-fill me-1" style="margin-top: -2px;"></i> Donate
           </a>
         </li>
       </ul>

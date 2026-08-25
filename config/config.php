@@ -53,5 +53,16 @@ define('CHECKOUT_MODE_COWS', 'whatsapp');
 define('CHECKOUT_MODE_PRODUCTS', 'both');
 define('WA_DEFAULT_MSG_COWS', '');
 define('WA_DEFAULT_MSG_PRODUCTS', '');
-define('WA_PHONE_COWS', '');
-define('WA_PHONE_PRODUCTS', '');
+define('WA_PHONE_COWS', '8217353139');
+define('WA_PHONE_PRODUCTS', '7204967137');
+
+// ─── Payment Settings ─────────────────────────────────────────────────────────
+define('BANK_NAME', 'State Bank of India');
+define('BANK_ACCOUNT_NO', '00000012345678');
+define('BANK_IFSC', 'SBIN0001234');
+define('BANK_ACCOUNT_NAME', 'Kamadhenu Goushala Trust');
+define('UPI_ID', 'kamadhenu@sbi');
+
+// ─── Site Branding ────────────────────────────────────────────────────────────
+define('SITE_LOGO', '');
+define('SITE_FAVICON', '');

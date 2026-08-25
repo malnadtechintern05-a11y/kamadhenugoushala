@@ -60,42 +60,42 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
   <table class="table table-bordered align-middle">
     <tbody>
       <tr>
-        <th style="width:180px; background:#f8f9fa;">Adopter Name</th>
+        <th class="bg-body-tertiary" style="width:180px;">Adopter Name</th>
         <td><?= e($adoption['adopter_name']) ?></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Email Address</th>
+        <th class="bg-body-tertiary">Email Address</th>
         <td><a href="mailto:<?= e($adoption['adopter_email']) ?>"><?= e($adoption['adopter_email']) ?></a></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Phone Number</th>
+        <th class="bg-body-tertiary">Phone Number</th>
         <td><?= $adoption['adopter_phone'] ? e($adoption['adopter_phone']) : '<em class="text-muted">Not provided</em>' ?></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Address</th>
+        <th class="bg-body-tertiary">Address</th>
         <td><?= $adoption['adopter_address'] ? nl2br(e($adoption['adopter_address'])) : '<em class="text-muted">Not provided</em>' ?></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Cow Details</th>
+        <th class="bg-body-tertiary">Cow Details</th>
         <td>
            <strong><?= e($adoption['cow_name'] ?? 'N/A') ?></strong><br>
            <span style="font-size:0.85rem; color:#666;"><?= e($adoption['cow_breed'] ?? '') ?></span>
         </td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Duration</th>
+        <th class="bg-body-tertiary">Duration</th>
         <td><?= (int)$adoption['duration_months'] ?> months</td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Monthly Amount</th>
+        <th class="bg-body-tertiary">Monthly Amount</th>
         <td class="fw-bold text-kg-green"><?= format_inr((float)$adoption['amount_per_month']) ?></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Date Applied</th>
+        <th class="bg-body-tertiary">Date Applied</th>
         <td><?= format_datetime($adoption['created_at']) ?></td>
       </tr>
       <tr>
-        <th style="background:#f8f9fa;">Status</th>
+        <th class="bg-body-tertiary">Status</th>
         <td>
           <form method="POST" action="" class="d-flex align-items-center gap-2">
             <?= csrf_field() ?>
@@ -114,7 +114,7 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
 
   <?php if (!empty($adoption['message'])): ?>
   <h5 class="mt-4 mb-3" style="color:var(--kg-green-dark);">Adopter Message / Notes</h5>
-  <div class="p-4 rounded" style="background:#f9f9f9; border: 1px solid #e5e7eb; white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;"><?= e($adoption['message']) ?></div>
+  <div class="p-4 rounded bg-body-tertiary border" style="white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;"><?= e($adoption['message']) ?></div>
   <?php endif; ?>
   
   <div class="mt-4 d-flex gap-2">

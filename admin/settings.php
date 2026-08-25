@@ -138,6 +138,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+// Handle Payment Settings update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_payment_settings') {
+    csrf_validate();
+
+    $settingsToUpdate = [
+        'BANK_NAME'         => $_POST['bank_name'] ?? '',
+        'BANK_ACCOUNT_NO'   => $_POST['bank_account_no'] ?? '',
+        'BANK_IFSC'         => $_POST['bank_ifsc'] ?? '',
+        'BANK_ACCOUNT_NAME' => $_POST['bank_account_name'] ?? '',
+        'UPI_ID'            => $_POST['upi_id'] ?? '',
+    ];
+
+    $configFile = __DIR__ . '/../config/config.php';
+    if (is_writable($configFile)) {
+        $configContent = file_get_contents($configFile);
+        foreach ($settingsToUpdate as $key => $value) {
+            $valueEscaped = str_replace("'", "\'", $value);
+            $pattern = "/define\(\s*['\"]" . preg_quote($key, '/') . "['\"]\s*,\s*['\"].*?['\"]\s*\);/is";
+            $replacement = "define('$key', '$valueEscaped');";
+            $configContent = preg_replace($pattern, $replacement, $configContent);
+        }
+        if (file_put_contents($configFile, $configContent)) {
+            header("Location: settings.php?success=payment_updated");
+            exit;
+        } else {
+            $errors[] = 'Failed to write to config.php. Please try again.';
+        }
+    } else {
+        $errors[] = 'config.php is not writable. Check file permissions.';
+    }
+}
+
+// Handle Branding Settings update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_branding_settings') {
+    csrf_validate();
+    
+    $settingsToUpdate = [];
+    $uploadDir = __DIR__ . '/../uploads/branding/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+    
+    if (isset($_FILES['site_logo']) && $_FILES['site_logo']['error'] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['site_logo']['name'], PATHINFO_EXTENSION));
+        if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'svg', 'gif'])) {
+            $logoName = 'logo_' . time() . '.' . $ext;
+            if (move_uploaded_file($_FILES['site_logo']['tmp_name'], $uploadDir . $logoName)) {
+                $settingsToUpdate['SITE_LOGO'] = $logoName;
+            }
+        } else {
+            $errors[] = "Invalid logo file type.";
+        }
+    }
+    
+    if (isset($_FILES['site_favicon']) && $_FILES['site_favicon']['error'] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['site_favicon']['name'], PATHINFO_EXTENSION));
+        if (in_array($ext, ['png', 'ico', 'svg'])) {
+            $favName = 'favicon_' . time() . '.' . $ext;
+            if (move_uploaded_file($_FILES['site_favicon']['tmp_name'], $uploadDir . $favName)) {
+                $settingsToUpdate['SITE_FAVICON'] = $favName;
+            }
+        } else {
+            $errors[] = "Invalid favicon file type.";
+        }
+    }
+    
+    if (!empty($settingsToUpdate)) {
+        $configFile = __DIR__ . '/../config/config.php';
+        if (is_writable($configFile)) {
+            $configContent = file_get_contents($configFile);
+            foreach ($settingsToUpdate as $key => $value) {
+                $valueEscaped = str_replace("'", "\'", $value);
+                $pattern = "/define\(\s*['\"]" . preg_quote($key, '/') . "['\"]\s*,\s*['\"].*?['\"]\s*\);/is";
+                if (preg_match($pattern, $configContent)) {
+                    $replacement = "define('$key', '$valueEscaped');";
+                    $configContent = preg_replace($pattern, $replacement, $configContent);
+                }
+            }
+            if (file_put_contents($configFile, $configContent)) {
+                header("Location: settings.php?success=branding_updated");
+                exit;
+            } else {
+                $errors[] = 'Failed to write to config.php.';
+            }
+        } else {
+            $errors[] = 'config.php is not writable.';
+        }
+    } elseif (empty($errors)) {
+        header("Location: settings.php?success=branding_updated");
+        exit;
+    }
+}
+
 if (isset($_GET['success']) && $_GET['success'] === 'settings_updated') {
     $settings_success = true;
 } else {
@@ -194,6 +287,58 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
       </form>
     </div>
 
+    <!-- Site Branding Settings -->
+    <div class="kg-admin-form-card">
+      <h5 class="text-kg-green mb-4"><i class="bi bi-image me-2"></i>Site Branding</h5>
+      
+      <?php if (isset($_GET['success']) && $_GET['success'] === 'branding_updated'): ?>
+      <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Branding settings updated!</div>
+      <?php endif; ?>
+
+      <form method="POST" action="" enctype="multipart/form-data">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="update_branding_settings">
+        
+        <div class="mb-4">
+          <label class="form-label">Website Logo</label>
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="bg-light border rounded p-2 text-center" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+              <?php if (defined('SITE_LOGO') && !empty(SITE_LOGO)): ?>
+                <img src="<?= BASE_URL ?>/uploads/branding/<?= e(SITE_LOGO) ?>" style="max-width: 100%; max-height: 100%;">
+              <?php else: ?>
+                <?= get_cow_logo_svg() ?>
+              <?php endif; ?>
+            </div>
+            <div class="flex-grow-1">
+              <input type="file" name="site_logo" class="form-control" accept=".png,.jpg,.jpeg,.svg,.webp">
+              <div class="form-text">Upload a new logo to replace the default one. Recommended format: SVG or PNG with transparent background.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4 border-top pt-3">
+          <label class="form-label">Favicon (Tab Icon)</label>
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="bg-light border rounded p-2 text-center" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+              <?php if (defined('SITE_FAVICON') && !empty(SITE_FAVICON)): ?>
+                <img src="<?= BASE_URL ?>/uploads/branding/<?= e(SITE_FAVICON) ?>" style="max-width: 100%; max-height: 100%;">
+              <?php else: ?>
+                <img src="<?= BASE_URL ?>/assets/images/favicon.svg" style="max-width: 100%; max-height: 100%;">
+              <?php endif; ?>
+            </div>
+            <div class="flex-grow-1">
+              <input type="file" name="site_favicon" class="form-control" accept=".ico,.png,.svg">
+              <div class="form-text">This icon appears in the browser tab. Recommended size: 32x32px or 64x64px. Format: ICO, PNG or SVG.</div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-kg-primary w-100 mt-auto">
+          <i class="bi bi-save me-2"></i>Save Branding
+        </button>
+      </form>
+    </div>
+
     <!-- Social Media Links -->
     <div class="kg-admin-form-card">
       <h5 class="text-kg-green mb-4"><i class="bi bi-share me-2"></i>Social Media Links</h5>
@@ -227,6 +372,48 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
 
         <button type="submit" class="btn btn-kg-primary w-100">
           <i class="bi bi-save me-2"></i>Save Social Media Links
+        </button>
+      </form>
+    </div>
+
+    <!-- Payment Settings -->
+    <div class="kg-admin-form-card">
+      <h5 class="text-kg-green mb-4"><i class="bi bi-credit-card me-2"></i>Payment & Bank Settings</h5>
+      
+      <?php if (isset($_GET['success']) && $_GET['success'] === 'payment_updated'): ?>
+      <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Payment settings updated!</div>
+      <?php endif; ?>
+
+      <form method="POST" action="">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="update_payment_settings">
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Bank Name</label>
+            <input type="text" name="bank_name" class="form-control" value="<?= e(defined('BANK_NAME') ? BANK_NAME : '') ?>" placeholder="e.g. State Bank of India">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Account Number</label>
+            <input type="text" name="bank_account_no" class="form-control" value="<?= e(defined('BANK_ACCOUNT_NO') ? BANK_ACCOUNT_NO : '') ?>" placeholder="e.g. 00000012345678">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">IFSC Code</label>
+            <input type="text" name="bank_ifsc" class="form-control" value="<?= e(defined('BANK_IFSC') ? BANK_IFSC : '') ?>" placeholder="e.g. SBIN0001234">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Account Name</label>
+            <input type="text" name="bank_account_name" class="form-control" value="<?= e(defined('BANK_ACCOUNT_NAME') ? BANK_ACCOUNT_NAME : '') ?>" placeholder="e.g. Kamadhenu Trust">
+          </div>
+          <div class="col-12 mb-4">
+            <label class="form-label">UPI ID</label>
+            <input type="text" name="upi_id" class="form-control" value="<?= e(defined('UPI_ID') ? UPI_ID : '') ?>" placeholder="e.g. kamadhenu@sbi">
+            <div class="form-text">This will be used to generate the QR code on the donation page.</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-kg-primary w-100">
+          <i class="bi bi-save me-2"></i>Save Payment Settings
         </button>
       </form>
     </div>

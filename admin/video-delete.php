@@ -29,12 +29,12 @@ if ($id > 0 && hash_equals(csrf_token(), $token)) {
             $pdo->query("UPDATE videos SET is_featured = 1 ORDER BY created_at DESC LIMIT 1");
         }
         
-        flash_set('Video deleted successfully.', 'success');
+        set_flash('success', 'Video deleted successfully.');
     } else {
-        flash_set('Video not found.', 'danger');
+        set_flash('danger', 'Video not found.');
     }
 } else {
-    flash_set('Invalid request.', 'danger');
+    set_flash('danger', 'Invalid request.');
 }
 
 redirect(BASE_URL . '/admin/videos.php');

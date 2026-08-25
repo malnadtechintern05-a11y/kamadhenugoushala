@@ -23,7 +23,7 @@ HTML;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= e($adminPageTitle) ?> | Admin | <?= SITE_NAME ?></title>
-  <link rel="icon" href="<?= BASE_URL ?>/assets/images/favicon.svg?v=3" type="image/svg+xml">
+  <link rel="icon" href="<?= get_site_favicon_url() ?>" type="<?= get_site_favicon_type() ?>">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Serif:wght@700&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@ HTML;
 <div id="kg-preloader" class="kg-preloader">
   <div class="kg-preloader-content">
     <div class="kg-preloader-logo-wrap">
-      <img src="<?= BASE_URL ?>/assets/images/favicon.svg" alt="Loading" class="kg-preloader-logo">
+      <img src="<?= get_site_favicon_url() ?>" alt="Loading" class="kg-preloader-logo">
       <div class="kg-preloader-ring"></div>
     </div>
     <div class="kg-preloader-text">
@@ -80,6 +80,7 @@ if (performance.navigation.type !== 1) {
     <div class="kg-sidebar-nav-label mt-2">Records</div>
     <?= admin_sidebar_link(BASE_URL . '/admin/orders.php',     'cart-check-fill','Orders',     $adminActivePage, 'orders') ?>
     <?= admin_sidebar_link(BASE_URL . '/admin/donations.php',  'currency-rupee', 'Donations',  $adminActivePage, 'donations') ?>
+    <?= admin_sidebar_link(BASE_URL . '/admin/supporter-payments.php', 'cash-stack', 'Supporter Payments', $adminActivePage, 'supporter_payments') ?>
     <?= admin_sidebar_link(BASE_URL . '/admin/adoptions.php',  'heart-fill',     'Adoptions',  $adminActivePage, 'adoptions') ?>
     <?= admin_sidebar_link(BASE_URL . '/admin/whatsapp-logs.php', 'whatsapp',   'WhatsApp Logs', $adminActivePage, 'whatsapp_logs') ?>
     <?= admin_sidebar_link(BASE_URL . '/admin/messages.php',   'envelope-fill',  'Messages',   $adminActivePage, 'messages') ?>
