@@ -311,14 +311,19 @@ window.addEventListener('load', function() {
   const preloader = document.getElementById('kg-preloader');
   // Only trigger the fade out animation if it wasn't hidden instantly in the header
   if (preloader && preloader.style.display !== 'none') {
-    // Add a slight delay for dramatic effect
+    // If translation is active, give it a bit more time to translate before fading out
+    let delay = 400;
+    if (document.cookie.indexOf('googtrans=') !== -1 && document.cookie.indexOf('googtrans=/en/en') === -1) {
+        delay = 800; // wait longer for google translate to finish
+    }
+    // Add a slight delay for dramatic effect / translation
     setTimeout(() => {
       preloader.classList.add('fade-out');
       // Remove it from the DOM after transition completes to free memory
       setTimeout(() => {
         preloader.remove();
       }, 800);
-    }, 400);
+    }, delay);
   }
 });
 </script>

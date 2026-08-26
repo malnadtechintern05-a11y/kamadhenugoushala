@@ -200,7 +200,7 @@ require_once __DIR__ . '/includes/navbar.php';
     <!-- Google Maps Embed Full Width -->
     <div class="mt-5 rounded-4 shadow-sm overflow-hidden" style="border:1px solid var(--kg-border);">
       <iframe 
-        src="https://maps.google.com/maps?q=Dharmapur,%20Mysuru%20District,%20Karnataka%20571201&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+        src="https://maps.google.com/maps?q=Village+Dharmapur,+Dist.+Mysuru,+Karnataka+571+201&t=k&z=15&ie=UTF8&iwloc=&output=embed" 
         width="100%" 
         height="450" 
         style="border:0; display:block;" 

@@ -11,6 +11,24 @@ require_once __DIR__ . '/../includes/auth.php';
 require_admin_auth();
 
 $pdo = getDBConnection();
+
+// Handle status updates
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_status') {
+    $token = $_POST['csrf_token'] ?? '';
+    if (hash_equals(csrf_token(), $token)) {
+        $donation_id = (int)$_POST['donation_id'];
+        $new_status = in_array($_POST['status'], ['Pending', 'Completed', 'Failed']) ? $_POST['status'] : 'Pending';
+        
+        $stmt = $pdo->prepare("UPDATE donations SET status = :status WHERE id = :id");
+        if ($stmt->execute([':status' => $new_status, ':id' => $donation_id])) {
+            set_flash('success', "Donation status updated successfully.");
+        } else {
+            set_flash('danger', "Failed to update status.");
+        }
+    }
+    redirect(BASE_URL . '/admin/donations.php' . (isset($_GET['status']) ? '?status=' . urlencode($_GET['status']) : ''));
+}
+
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $status = sanitize($_GET['status'] ?? '');
 
@@ -34,6 +52,8 @@ $summary = $pdo->query("SELECT status, COUNT(*) AS cnt, COALESCE(SUM(amount),0) 
 $adminPageTitle  = 'Donations';
 $adminActivePage = 'donations';
 require_once __DIR__ . '/includes/admin_layout_header.php';
+
+echo flash_alert();
 ?>
 
 <!-- Summary -->
@@ -62,7 +82,7 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
   <div class="table-responsive">
     <table class="table align-middle">
       <thead>
-        <tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Payment</th><th>Status</th><th>Date</th></tr>
+        <tr><th>Donor</th><th>Email</th><th>Amount</th><th>Purpose</th><th>Payment</th><th>Status</th><th>Date</th><th class="text-end">Action</th></tr>
       </thead>
       <tbody>
         <?php if (empty($pagData['items'])): ?>
@@ -80,6 +100,18 @@ require_once __DIR__ . '/includes/admin_layout_header.php';
             <span class="<?= $sc ?>"><?= e($d['status']) ?></span>
           </td>
           <td style="font-size:.78rem;color:#888;"><?= format_datetime($d['created_at']) ?></td>
+          <td class="text-end">
+            <form method="POST" action="" class="d-inline-flex gap-2">
+                <?= csrf_field() ?>
+                <input type="hidden" name="action" value="update_status">
+                <input type="hidden" name="donation_id" value="<?= $d['id'] ?>">
+                <select name="status" class="form-select form-select-sm" style="width:110px;" onchange="this.form.submit()">
+                    <option value="Pending" <?= $d['status'] === 'Pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="Completed" <?= $d['status'] === 'Completed' ? 'selected' : '' ?>>Completed</option>
+                    <option value="Failed" <?= $d['status'] === 'Failed' ? 'selected' : '' ?>>Failed</option>
+                </select>
+            </form>
+          </td>
         </tr>
         <?php endforeach; ?>
         <?php endif; ?>

@@ -108,13 +108,13 @@ function nav_active(string $page, string $current): string {
           <a class="nav-link d-flex align-items-center" href="<?= BASE_URL ?>/supporter-dashboard.php" title="Supporter Account">
             <i class="bi bi-person-circle fs-5 me-1"></i>
             <?php if (isset($_SESSION['supporter_name'])): ?>
-              <span class="fw-bold" style="font-size: 0.9rem; margin-top: 2px;"><?= e($_SESSION['supporter_name']) ?></span>
+              <span class="fw-bold text-truncate" style="font-size: 0.9rem; max-width: 120px;"><?= e($_SESSION['supporter_name']) ?></span>
             <?php endif; ?>
           </a>
         </li>
         <li class="nav-item ms-lg-2 d-flex align-items-center">
           <a class="btn kg-btn-donate d-flex align-items-center" target="_blank" href="<?= BASE_URL ?>/donate.php">
-            <i class="bi bi-heart-fill me-1" style="margin-top: -2px;"></i> Donate
+            <i class="bi bi-heart-fill me-1"></i> Donate
           </a>
         </li>
       </ul>

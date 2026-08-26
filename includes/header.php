@@ -33,6 +33,43 @@ $pageDesc  = $pageDesc  ?? 'Kamadhenu Goushala — A sacred sanctuary dedicated 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css?v=<?= time() ?>">
+  
+  <script>
+  // Prevent Google Translate FOUT (Flash of English) on navigation
+  if (document.cookie.indexOf('googtrans=') !== -1 && document.cookie.indexOf('googtrans=/en/en') === -1) {
+      document.documentElement.classList.add('hide-for-translate');
+      
+      // Watch for Google Translate to finish and add its class
+      var observer = new MutationObserver(function(mutations) {
+          if (document.documentElement.classList.contains('translated-ltr') || document.documentElement.classList.contains('translated-rtl')) {
+              document.documentElement.classList.remove('hide-for-translate');
+              observer.disconnect();
+          }
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+      // Fallback in case Google Translate fails or takes too long (max 2 seconds)
+      setTimeout(function() {
+          document.documentElement.classList.remove('hide-for-translate');
+          if (observer) observer.disconnect();
+      }, 2000);
+  }
+  </script>
+  <style>
+  /* Hide content while translating to prevent flicker */
+  html.hide-for-translate body {
+      opacity: 0 !important;
+      visibility: hidden !important;
+  }
+  /* Smooth fade in once translated */
+  html.translated-ltr body, html.translated-rtl body {
+      animation: fadeInTranslate 0.4s ease forwards;
+  }
+  @keyframes fadeInTranslate {
+      from { opacity: 0; visibility: hidden; }
+      to { opacity: 1; visibility: visible; }
+  }
+  </style>
 </head>
 <body>
 

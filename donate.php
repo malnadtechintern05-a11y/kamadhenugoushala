@@ -144,9 +144,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(text);
         
-        // Since the previous links already have target="_blank", opening in current window is fine, 
-        // but we'll use window.location.href to redirect the popup tab directly to WA.
-        window.location.href = url;
+        // Save donation pledge in database before redirecting
+        const formData = new FormData();
+        formData.append('amount', amount);
+        formData.append('purpose', purpose);
+        formData.append('donor_name', name);
+        
+        waSubmitBtn.disabled = true;
+        waSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...';
+        
+        fetch('<?= BASE_URL ?>/process_donation.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.href = url;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Even if it fails, still redirect so the user can donate
+            window.location.href = url;
+        });
     });
 });
 </script>

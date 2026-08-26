@@ -89,7 +89,7 @@ echo flash_alert();
                         </td>
                         <td style="max-width:250px;">
                             <?php if ($pay['message']): ?>
-                                <div class="p-2 rounded bg-light border fst-italic small text-wrap">
+                                <div class="fst-italic small text-wrap text-muted">
                                     "<?= nl2br(e($pay['message'])) ?>"
                                 </div>
                             <?php else: ?>
