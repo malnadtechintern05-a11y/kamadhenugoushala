@@ -3,10 +3,12 @@
  * Application Configuration — Kamadhenu Goushala
  */
 
-// ─── Base URL ────────────────────────────────────────────────────────────────
-// Change this to your domain when deploying to production.
-// For XAMPP local: 'http://localhost/kamadhenugoushala'
-define('BASE_URL', 'http://localhost/kamadhenugoushala');
+// Auto-detect BASE_URL — works on both localhost and the live server
+if (!empty($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] === 'localhost') {
+    define('BASE_URL', 'http://localhost/kamadhenugoushala');
+} else {
+    define('BASE_URL', 'https://kamadhenu.free.je');
+}
 
 // ─── Site Info ────────────────────────────────────────────────────────────────
 define('SITE_NAME',    'Kamadhenu Goushala');

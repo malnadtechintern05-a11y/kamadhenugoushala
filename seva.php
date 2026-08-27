@@ -80,7 +80,7 @@ $sevaOptions = [
     </div>
     <div class="row g-4">
       <?php foreach ($sevaOptions as $seva): ?>
-      <div class="col-md-6 col-lg-4">
+      <div class="col-12 col-md-6 col-lg-4">
         <div class="kg-seva-card h-100">
           <div class="kg-seva-icon" style="background:<?= $seva['bg'] ?>;color:<?= $seva['color'] ?>;">
             <i class="bi bi-<?= $seva['icon'] ?>"></i>
@@ -115,7 +115,7 @@ $sevaOptions = [
         ['time'=>'7:00 PM','icon'=>'moon-fill','label'=>'Evening Prayer','desc'=>'Day closes with a lamp-lighting ceremony and a prayer for all cows.'],
       ];
       foreach ($schedule as $sch): ?>
-      <div class="col-md-6 col-lg-4">
+      <div class="col-12 col-md-6 col-lg-4">
         <div class="d-flex gap-3 p-3 bg-white rounded-3 shadow-sm border h-100" style="border-color:var(--kg-border)!important;">
           <div style="width:44px;height:44px;background:var(--kg-green-pale);border-radius:var(--kg-radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--kg-green);flex-shrink:0;">
             <i class="bi bi-<?= $sch['icon'] ?>"></i>

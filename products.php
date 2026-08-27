@@ -65,7 +65,7 @@ require_once __DIR__ . '/includes/navbar.php';
     <?php else: ?>
     <div class="row g-4">
       <?php foreach ($pagData['items'] as $prod): ?>
-      <div class="col-md-6 col-lg-4">
+      <div class="col-12 col-md-6 col-lg-4">
         <div class="kg-product-card">
           <div class="kg-product-card-img">
             <img src="<?= img_url('products', $prod['image']) ?>"
@@ -145,7 +145,7 @@ require_once __DIR__ . '/includes/navbar.php';
         ['icon'=>'heart-pulse-fill','title'=>'Health Benefits','desc'=>'Rich in nutrients, our A2 products support a healthy lifestyle and boost immunity.']
       ];
       foreach ($reasons as $r): ?>
-      <div class="col-md-6 col-lg-4">
+      <div class="col-12 col-md-6 col-lg-4">
         <div class="kg-seva-card text-center" style="height:100%; border-color:var(--kg-border);">
           <div class="kg-seva-icon"><i class="bi bi-<?= $r['icon'] ?>"></i></div>
           <h5><?= e($r['title']) ?></h5>

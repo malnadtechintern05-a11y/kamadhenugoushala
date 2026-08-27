@@ -278,7 +278,7 @@ html { scroll-behavior: smooth; }
     
     <div class="row g-4">
       <?php foreach ($featuredCows as $cow): ?>
-      <div class="col-md-6 col-lg-4">
+      <div class="col-12 col-md-6 col-lg-4">
         <div class="kg-cow-card h-100 shadow-sm" style="border-radius: var(--kg-radius); overflow: hidden; background-color: var(--kg-white); border: 1px solid var(--kg-border);">
           <div class="position-relative">
             <img src="<?= img_url('cows', $cow['image']) ?>"
@@ -427,7 +427,7 @@ html { scroll-behavior: smooth; }
     </div>
     <div class="row g-4">
       <?php foreach ($featuredProducts as $prod): ?>
-      <div class="col-md-6 col-lg-4">
+      <div class="col-12 col-md-6 col-lg-4">
         <div class="kg-product-card">
           <div class="kg-product-card-img">
             <img src="<?= img_url('products', $prod['image']) ?>"

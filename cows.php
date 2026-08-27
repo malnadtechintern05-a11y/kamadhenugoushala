@@ -97,7 +97,7 @@ require_once __DIR__ . '/includes/navbar.php';
     <?php else: ?>
     <div class="row g-4">
       <?php foreach ($pagData['items'] as $cow): ?>
-      <div class="col-md-6 col-lg-4">
+      <div class="col-12 col-md-6 col-lg-4">
         <div class="kg-cow-card">
           <div class="kg-cow-card-img">
             <img src="<?= img_url('cows', $cow['image']) ?>"
